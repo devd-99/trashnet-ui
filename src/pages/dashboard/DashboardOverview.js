@@ -32,9 +32,27 @@ import {
 import { PageVisitsTable } from "../../components/Tables";
 import { trafficShares, totalOrders } from "../../data/charts";
 
+import { getAuth, onAuthStateChanged } from "firebase/auth";
+
 export default () => {
+  var loadPage = false;
+  const auth = getAuth();
+  onAuthStateChanged(auth, (user) => {
+    if (user) {
+      // User is signed in, see docs for a list of available properties
+      // https://firebase.google.com/docs/reference/js/firebase.User
+      const uid = user.uid;
+      console.log(uid);
+      loadPage = true;
+      // ...
+    } else {
+      // User is signed out
+      // ...
+    }
+  });
+
   return (
-    <>
+      <div>
       <div className="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center py-4">
         <Dropdown className="btn-toolbar">
           <Dropdown.Toggle
@@ -164,6 +182,6 @@ export default () => {
           </Row>
         </Col>
       </Row>
-    </>
+    </div> 
   );
 };

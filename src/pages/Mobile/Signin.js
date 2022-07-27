@@ -3,7 +3,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faAngleLeft, faEnvelope, faUnlockAlt } from "@fortawesome/free-solid-svg-icons";
 import { faFacebookF, faGithub, faTwitter } from "@fortawesome/free-brands-svg-icons";
 import { Col, Row, Form, Card, Button, FormCheck, Container, InputGroup } from 'react-bootstrap';
-import { Link } from 'react-router-dom';
+import { useHistory, Link } from 'react-router-dom';
 import { Routes } from "../../routes";
 import BgImage from "../../assets/img/illustrations/signin.svg";
 
@@ -12,17 +12,23 @@ import db from '../../firebase.config';
 import { doc, onSnapshot, collection, query, where,getDocs } from "firebase/firestore";
 import {useState,useEffect} from 'react';
 
+import { getAuth, signInWithEmailAndPassword } from "firebase/auth";
 
-
-
+const initialFormData = Object.freeze({
+  password: "",
+  email: ""
+});
 
 export default () => {
 
+  const auth = getAuth();
   const q = query(collection(db, "users"));
-
+  const [formData, updateFormData] = useState(initialFormData);
+  const history = useHistory();
   const [users,setUsers]=useState([])
+
   useEffect(() => {
-    fetchUsers();
+    // fetchUsers();
   }, [])
   const fetchUsers=async()=>{
     const querySnapshot = await getDocs(q);
@@ -33,6 +39,35 @@ export default () => {
     });
   }
 
+
+  const handleChange = (e) => {
+    console.log("handleChange called")
+    updateFormData({
+      ...formData,
+
+      // Trimming any whitespace
+      [e.target.name]: e.target.value.trim()
+    });
+    
+  };
+  const logInWithEmailAndPassword = async () => {
+    var res = null
+    // console.log(formData)
+    try {
+      const email = String(formData.email)
+      const password = String(formData.password)
+      console.log(email, password)
+      res = await signInWithEmailAndPassword(auth, email, password);
+    } catch (err) {
+      console.error(err);
+      alert(err.message);
+    }
+    finally {
+      const user = res.user;
+      console.log(user)
+      history.push("/dashboard/overview");
+    }
+  };
 
   return (
     <main>
@@ -56,7 +91,7 @@ export default () => {
                       <InputGroup.Text>
                         <FontAwesomeIcon icon={faEnvelope} />
                       </InputGroup.Text>
-                      <Form.Control autoFocus required type="email" placeholder="example@company.com" />
+                      <Form.Control autoFocus required name="email" type="email" onChange={handleChange}  placeholder="example@company.com" />
                     </InputGroup>
                   </Form.Group>
                   <Form.Group>
@@ -66,7 +101,7 @@ export default () => {
                         <InputGroup.Text>
                           <FontAwesomeIcon icon={faUnlockAlt} />
                         </InputGroup.Text>
-                        <Form.Control required type="password" placeholder="Password" />
+                        <Form.Control required name="password" type="password" onChange={handleChange}  placeholder="Password" />
                       </InputGroup>
                     </Form.Group>
                     <div className="d-flex justify-content-between align-items-center mb-4">
@@ -80,12 +115,15 @@ export default () => {
                   {/* <Button variant="primary" type="submit" className="w-100">
                     Sign in
                   </Button> */}
-                  <Button variant="primary" as={Link} to={Routes.DashboardOverview.path} className="w-100">
+                  {/* <Button variant="primary" as={Link} to={Routes.DashboardOverview.path} className="w-100">
+                  Login 
+                  </Button> */}
+                  <Button variant="primary" onClick={logInWithEmailAndPassword} className="w-100">
                   Login 
                   </Button>
                 </Form>
 
-                <div className="mt-3 mb-4 text-center">
+                {/* <div className="mt-3 mb-4 text-center">
                   <span className="fw-normal">or login with</span>
                 </div>
                 <div className="d-flex justify-content-center my-4">
@@ -98,7 +136,8 @@ export default () => {
                   <Button variant="outline-light" className="btn-icon-only btn-pil text-dark">
                     <FontAwesomeIcon icon={faGithub} />
                   </Button>
-                </div>
+                </div> */}
+
                 <div className="d-flex justify-content-center align-items-center mt-4">
                   <span className="fw-normal">
                  
