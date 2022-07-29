@@ -12,10 +12,48 @@ import { HashLink } from 'react-router-hash-link';
 import NOTIFICATIONS_DATA from "../data/notifications";
 import Profile3 from "../assets/img/team/profile-picture-3.jpg";
 
+//auth imports 
+import { getAuth, onAuthStateChanged } from "firebase/auth";
+import { collection, query, where,getDocs } from "firebase/firestore";
+import db from '../firebase.config';
 
 export default (props) => {
   const [notifications, setNotifications] = useState(NOTIFICATIONS_DATA);
   const areNotificationsRead = notifications.reduce((acc, notif) => acc && notif.read, true);
+
+  var loadPage = false;
+  
+  const auth = getAuth();
+  var userName = "";
+  onAuthStateChanged(auth, (user) => {
+    if (user) {
+      // User is signed in, see docs for a list of available properties
+      // https://firebase.google.com/docs/reference/js/firebase.User
+      const uid = user.uid;
+      console.log(uid, "loadPage now true in navbar");
+      loadPage = true;
+      // var doc = fetchUser(uid)
+      fetchUser(uid)
+      console.log(userName)
+      // ...
+    } else {
+      // User is signed out
+      // ...
+    }
+  });
+
+  const fetchUser=async(uid)=>{
+    const q = query(collection(db, "users"), where("uid", "==", uid));
+    const querySnapshot = await getDocs(q);
+    console.log(querySnapshot)
+    querySnapshot.forEach((doc) => {
+      // doc.data() is never undefined for query doc snapshots
+      console.log(doc.id, " => ", doc.data().username);
+      userName = doc.data().username
+      console.log(userName)
+      document.getElementById("username_display").innerHTML = userName
+    });
+  }
 
   const markNotificationsAsRead = () => {
     setTimeout(() => {
@@ -92,7 +130,7 @@ export default (props) => {
                 <div className="media d-flex align-items-center">
                   <Image src={Profile3} className="user-avatar md-avatar rounded-circle" />
                   <div className="media-body ms-2 text-dark align-items-center d-none d-lg-block">
-                    <span className="mb-0 font-small fw-bold">Bonnie Green</span>
+                    <span className="mb-0 font-small fw-bold" id="username_display"></span>{userName}
                   </div>
                 </div>
               </Dropdown.Toggle>
