@@ -1,5 +1,5 @@
 import React from "react";
-import { Routes } from "../../routes";gi
+import { Routes } from "../../routes";
 import { House, List, User, Plus } from "phosphor-react";
 import { Test } from "./test";
 import { ThemeProvider } from "@material-tailwind/react";
