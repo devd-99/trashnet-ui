@@ -116,8 +116,6 @@ export default () => {
     console.log("handlesubmit called")
 
     console.log(formData.password);
-    // const passMatch = checkPassMatch(formData.password, formData.confPass)
-    // const passLength = 
 
     const email = String(formData.email)
     const password = String(formData.password)
@@ -132,8 +130,6 @@ export default () => {
     if(typesOfWaste != {}) {
       typesOfWaste_doc = typesOfWaste;
     }
-    // typesOfWaste==={} ? typesOfWaste_doc = {} :typesOfWaste_doc = typesOfWaste;
-    // Object.freeze(typesOfWaste_doc)
 
    
     if(formData.role === "r") {
@@ -143,15 +139,6 @@ export default () => {
     if(formData.role === "m") {
       var primary_business = formData.primary_business
     }
-
-    // facilityTypes==={} ? facilityTypes_doc ={} : facilityTypes_doc = facilityTypes
-    // Object.freeze(facilityTypes_doc)
-
-    // console.log(formData.username);
-    // console.log(formData.confirmPassword);
-    // console.log(typesOfWaste_doc);
-    // console.log(typesOfWaste);
-    // console.log(facilityTypes_doc)
 
     //add form validation
     const res = await createUserWithEmailAndPassword(auth, email, password);

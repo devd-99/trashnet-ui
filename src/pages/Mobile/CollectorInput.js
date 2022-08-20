@@ -6,7 +6,7 @@ import Dropdown from "react-bootstrap/Dropdown";
 import DropdownButton from "react-bootstrap/DropdownButton";
 import Form from "react-bootstrap/Form";
 import InputGroup from "react-bootstrap/InputGroup";
-import { Scales, CaretDown } from "phosphor-react";
+import { Scales, CaretDown, AddressBook } from "phosphor-react";
 
 
 
@@ -35,11 +35,121 @@ import {
   faUnlockAlt,
 } from "@fortawesome/free-solid-svg-icons";
 
+import { getAuth, createUserWithEmailAndPassword } from "firebase/auth";
+import { collection, addDoc, query, getDocs, where , doc, setDoc} from "firebase/firestore";
+import db from '../../firebase.config';
+
+const initialFormData = Object.freeze({
+  weight: "",
+  typeOfPlastic: "",
+  vehicle_no: ""
+});
+
+var list = []
+var PWP_List = [];
+var loc = null
+
 export default () => {
+
+  const auth = getAuth();
+  const [formData, updateFormData] = useState(initialFormData);
+  
+  const position = () => {
+
+    navigator.geolocation.getCurrentPosition(
+      (position) => {console.log(position); loc = position},
+      err => console.log(err)
+    )
+    console.log(loc)
+    console.log(formData)
+    console.log(list)
+  }
+
+  const handleChange = (e) => {
+    console.log("handleChange called")
+    updateFormData({
+      ...formData,
+
+      // Trimming any whitespace
+      [e.target.name]: e.target.value.trim()
+    });
+
+  };
+
+  // useEffect(() => {
+  //   getPWPs();
+  // }, [])
+  const getPWPs = async() => {
+    const q = query(collection(db, "users"), where("role", "==", "r"));
+    console.log(PWP_List)
+    const querySnapshot = await getDocs(q);
+    querySnapshot.forEach((doc) => {
+      // doc.data() is never undefined for query doc snapshots
+      console.log(doc.id, " => ", doc.data());
+      PWP_List.push(doc.data())
+      
+      
+      console.log(PWP_List)
+      
+    });
+    list = PWP_List.map(pwp => <option value={pwp.uid} key = {pwp.uid}>{pwp.username}</option>)
+  }
+
+  const handleSubmit = async () => {
+
+    const a = document.getElementById('recycler_name');
+    const t = {recycler: a.value}
+    await addDoc(collection(db, "tid_master"), t).then(async(tid) => {
+
+
+      
+      console.log(tid)
+      console.log("handlesubmit called")
+
+      console.log(formData.password);
+
+      const cycle_id = String(tid.uid)
+      const weight = String(formData.weight)
+      const typeOfPlastic = String(formData.typeOfPlastic)
+      const recycler_name = String(a.value)
+      const transporterName = String(formData.transporterName)
+      const vehicle_no = String(formData.vehicle_no)
+      const geolocationPosition = {
+        latitude: loc.coords.latitude,
+        longitude: loc.coords.longitude,
+        timestamp: loc.timestamp
+      }
+      console.log(geolocationPosition)
+
+      const payload = {
+        // uid: user.uid,
+        cycle_id: cycle_id,
+        weight: weight,
+        typeOfPlastic: typeOfPlastic,
+        recycler_name: recycler_name,
+        transporterName : transporterName,
+        vehicle_no: vehicle_no,
+        geolocationPosition: geolocationPosition
+      }
+
+      console.log(payload)
+
+      const docRef = await addDoc(collection(db, "transactions"), payload)
+
+
+    })
+
+
+    
+    
+
+
+  };
   var fileInput = document.getElementById('weight-collector');
   var fileDisplayArea = document.getElementById('fileDisplayArea');
 
   window.onload = function() {
+    getPWPs()
     var fileInput = document.getElementById('weight-collector');
     var fileDisplayArea = document.getElementById('fileDisplayArea');
 
@@ -61,11 +171,6 @@ export default () => {
     }
     });
   }
-
-  
-
-
-   
 
 
   return (
@@ -106,17 +211,32 @@ export default () => {
                         <Scales size={32} />
                         </InputGroup.Text>
 
-                        <Form.Control
-                          autoFocus
-                          required
-                          type="weight"
-                          placeholder="100"
-                        />
+                        <Form.Control id="weight" name="weight" autoFocus required type="weight" placeholder="100" onChange={handleChange}/>
+                        <InputGroup.Text>kgs</InputGroup.Text>
                       </InputGroup>
                        {/* Camera */}
                     </Form.Group>
-                    <Form.Group id="weight" className="mb-4">
+                    
+
+                    {/* { Images of weight collected} */}
+                    <Form.Group id="weight_img" className="mb-4">
                       <Form.Label>Picture of Weight</Form.Label>
+                      <input
+                        type="file"
+                        id="weight-collector"
+                        name="weight-collector"
+                        accept="image/*"
+                        capture="environment"
+                      ></input>
+
+                      <input
+                        type="file"
+                        id="weight-collector"
+                        name="weight-collector"
+                        accept="image/*"
+                        capture="environment"
+                      ></input>
+
                       <input
                         type="file"
                         id="weight-collector"
@@ -151,11 +271,17 @@ export default () => {
 
                   {/* Type of Plastic */}
                   <Form.Group id="typeOfPlastic" className="mb-4">
-                    <Form.Label>Type of Plastic Collected</Form.Label>
+                    <Form.Label>Type of Plastic</Form.Label>
                     <InputGroup>
                   
-                 
-                      <DropdownButton
+                      <Form.Select aria-label="Role Selection" name="typeOfPlastic" onChange={handleChange}>
+                          <option>Open this select menu</option>
+                          <option value="w1">Waste Type 1</option>
+                          <option value="w2">Waste Type 2</option>
+                          <option value="w3">Waste Type 3</option>
+                          <option value="w4">Waste Type 4</option>
+                      </Form.Select>
+                      {/* <DropdownButton
                         variant="outline-secondary"
                        
                         id="input-group-dropdown-2"
@@ -165,7 +291,7 @@ export default () => {
                         <Dropdown.Item href="#">Pla-Plastic</Dropdown.Item>
                         <Dropdown.Item href="#">Pla-Plastic</Dropdown.Item>
                       </DropdownButton>
-                      <Form.Control aria-label="Text input with dropdown button" />
+                      <Form.Control aria-label="Text input with dropdown button" /> */}
                     </InputGroup>
                   </Form.Group>
                   {/* Recycling Facility */}
@@ -185,42 +311,41 @@ export default () => {
                       <Form.Control aria-label="Text input with dropdown button" />
                     </InputGroup>
                   </Form.Group>
-                  {/* Images of waste collected */}
-                  <div>
-         
-                      <input
-                        type="file"
-                        id="weight-collector"
-                        name="weight-collector"
-                        accept="image/*"
-                        capture="environment"
-                      ></input>
+                  
 
-                     
-     
+                  {/* Recycler Name */}
+                  <Form.Group className="mb-4">
+                    <Form.Label>Recycler Name</Form.Label>
+                    <InputGroup>
+                      {/* <Form.Control
+                        autoFocus
+                        required
+                        type="weight"
+                        placeholder="Sample Recycler Name"
+                        id="recycler_name" name="recycler_name" onChange={handleChange}
+                      /> */}
+                      <Form.Select aria-label="Role Selection" name="role"  id="recycler_name" onChange={handleChange}>
+                        {/* <option>Open this select menu</option> */}
+                        {list}
+                        {/* {PWP_List.map(item => <option value={item.uid} key={item.uid}>{item.username} </option>)} */}
+                        {/* <option value = "1">2</option> */}
+                      </Form.Select>
+                    </InputGroup>
+                  </Form.Group>
 
-         
-                      <input
-                        type="file"
-                        id="weight-collector"
-                        name="weight-collector"
-                        accept="image/*"
-                        capture="environment"
-                      ></input>
+                  <Form.Group id="transporterName" className="mb-4">
+                      <Form.Label>Transporter Name</Form.Label>
+                      <InputGroup>
+                        <InputGroup.Text>
+                        <AddressBook size={32} />
+                        </InputGroup.Text>
 
-               
-                      <input
-                        type="file"
-                        id="weight-collector"
-                        name="weight-collector"
-                        accept="image/*"
-                        capture="environment"
-                      ></input>
+                        <Form.Control id="transporterName" name="transporterName" autoFocus required type="weight" placeholder="Sample Logistics" onChange={handleChange}/>
+                      </InputGroup>
+                  </Form.Group>
 
-   
-                  </div>
                   {/* Vehicle No. */}
-                  <Form.Group id="vehivle" className="mb-4">
+                  <Form.Group id="vehicle_no" className="mb-4">
                     <Form.Label>Vehicle no.</Form.Label>
                     <InputGroup>
                       <Form.Control
@@ -228,13 +353,17 @@ export default () => {
                         required
                         type="weight"
                         placeholder="KAXX 0001"
+                        id="vehicle_no" name="vehicle_no" onChange={handleChange}
                       />
                     </InputGroup>
                   </Form.Group>
+
+
                   {/* Summary */}
-                  <Button variant="primary" type="submit" className="w-100">
+                  <Button variant="primary"  className="w-100" onClick = {handleSubmit}>
                     Summary
                   </Button>
+                  <Button onClick = {position}>get location</Button>
                 </Form>
               </div>
             </Col>
