@@ -1,246 +1,163 @@
 import React, { useRef, useEffect, useState } from "react";
-
-import Webcam from "react-webcam";
-import { Link } from "react-router-dom";
-import Dropdown from "react-bootstrap/Dropdown";
-import DropdownButton from "react-bootstrap/DropdownButton";
-import Form from "react-bootstrap/Form";
-import InputGroup from "react-bootstrap/InputGroup";
-import { Scales, CaretDown } from "phosphor-react";
-
-
-
 import {
-  faFacebookF,
-  faGithub,
-  faTwitter,
-} from "@fortawesome/free-brands-svg-icons";
-import {
-  Col,
-  Row,
-  Card,
-  Button,
-  FormCheck,
+  Navbar,
   Container,
+  Button,
+  Image,
+  Row,
+  Col,
+  Stack,
+  Figure,
+  Form,
+  Card,
+  InputGroup,
 } from "react-bootstrap";
-
-import { Routes } from "../../routes";
-import BgImage from "../../assets/img/illustrations/signin.svg";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import {
-  faCameraRetro,
-  faWeightHanging,
-  faAngleLeft,
-  faEnvelope,
-  faUnlockAlt,
-} from "@fortawesome/free-solid-svg-icons";
+import { Typography } from "@material-tailwind/react";
+import { Scales, CaretDown, Camera, List, Recycle } from "phosphor-react";
 
 export default () => {
-  var fileInput = document.getElementById('weight-collector');
-  var fileDisplayArea = document.getElementById('fileDisplayArea');
+  var fileInput = document.getElementById("weight-collector");
+  var fileDisplayArea = document.getElementById("fileDisplayArea");
 
-  window.onload = function() {
-    var fileInput = document.getElementById('weight-collector');
-    var fileDisplayArea = document.getElementById('fileDisplayArea');
+  window.onload = function () {
+    var fileInput = document.getElementById("weight-collector");
+    var fileDisplayArea = document.getElementById("fileDisplayArea");
 
-    fileInput.addEventListener('change', function(e) {
+    fileInput.addEventListener("change", function (e) {
       // Put the rest of the demo code here.
       var file = fileInput.files[0];
       var imagetype = /image.*/;
       if (file.type.match(imagetype)) {
         var reader = new FileReader();
-        reader.onload = function(e){
+        reader.onload = function (e) {
           fileDisplayArea.innerHTML = "";
           var img = new Image();
           img.src = reader.result;
           fileDisplayArea.appendChild(img);
-        }
+        };
         reader.readAsDataURL(file);
-    }else{
-      fileDisplayArea.innerHTML = "File not supported!";
-    }
+      } else {
+        fileDisplayArea.innerHTML = "File not supported!";
+      }
     });
-  }
-
-  
-
-
-   
-
+  };
 
   return (
-    <main>
-      <section className="d-flex align-items-center my-5 mt-lg-6 mb-lg-5">
+    <>
+      <Navbar variant="light">
         <Container>
-          <p className="text-center">
-            <Card.Link
-              as={Link}
-              to={Routes.DashboardOverview.path}
-              className="text-gray-700"
-            >
-              <FontAwesomeIcon icon={faAngleLeft} className="me-2" /> Back to
-              homepage
-            </Card.Link>
-          </p>
-          <Row
-            className="justify-content-center form-bg-image"
-            style={{ backgroundImage: `url(${BgImage})` }}
-          >
-            <Col
-              xs={12}
-              className="d-flex align-items-center justify-content-center"
-            >
-              <div className="mb-4 mb-lg-0 bg-white shadow-soft border rounded border-light p-4 p-lg-5 w-100 fmxw-500">
-                <div className="text-center text-md-center mb-4 mt-md-0">
-                  {/* Header */}
-                  <h3 className="mb-0">Collector Input</h3>
-                </div>
-                <Form className="mt-4">
-                  <div className="mt-3 mb-4 text-center"></div>
-                  <div className=" justify-content-center my-4">
-                    {/* Weight */}
-                    <Form.Group id="weight" className="mb-4">
-                      <Form.Label>Weight of Collected waste</Form.Label>
-                      <InputGroup>
-                        <InputGroup.Text>
-                        <Scales size={32} />
-                        </InputGroup.Text>
+          <Button variant="outline-*">
+            <List size={24} />
+          </Button>
+        </Container>
+        <Container>
+          <Button variant="info" size="sm">
+            Contact Us
+          </Button>
+          <Button variant="outline-*" size="sm">
+            <img
+              src="https://picsum.photos/40/40"
+              width="20"
+              height="20"
+              class="rounded-circle"
+            ></img>
+          </Button>
+        </Container>
+      </Navbar>
+      <Stack gap={3}>
+        <Container>
+          <Row>
+            <Typography variant="h1">Good Morning John!</Typography>
 
-                        <Form.Control
-                          autoFocus
-                          required
-                          type="weight"
-                          placeholder="100"
-                        />
-                      </InputGroup>
-                       {/* Camera */}
-                    </Form.Group>
-                    <Form.Group id="weight" className="mb-4">
-                      <Form.Label>Picture of Weight</Form.Label>
-                      <input
-                        type="file"
-                        id="weight-collector"
-                        name="weight-collector"
-                        accept="image/*"
-                        capture="environment"
-                      ></input>
-                       <div id="fileDisplayArea"></div> 
-              
-
-
-                     
-                    </Form.Group>
-                    {/* <div classname="camera">
-                     <video ref={videoref}></video>
-                    <Button
-                      variant="outline-light"
-                      className="btn-icon-only btn-pil text-dark"
-                    >
-                      SNAP!
-                      <FontAwesomeIcon icon={faCameraRetro} />
-                    </Button>
-                    </div>
-                    <div classname={'result' + (hasPhoto ? 'hasPhoto' : '')}>
-                      <canvas ref={photoref}>
-                        <button>
-                          CLOSE!
-                        </button>
-                      </canvas>
-                    </div> */}
-                  </div>
-
-                  {/* Type of Plastic */}
-                  <Form.Group id="typeOfPlastic" className="mb-4">
-                    <Form.Label>Type of Plastic Collected</Form.Label>
-                    <InputGroup>
-                  
-                 
-                      <DropdownButton
-                        variant="outline-secondary"
-                       
-                        id="input-group-dropdown-2"
-                        align="end"
-                      >
-                        <Dropdown.Item href="#">Pla-Plastic</Dropdown.Item>
-                        <Dropdown.Item href="#">Pla-Plastic</Dropdown.Item>
-                        <Dropdown.Item href="#">Pla-Plastic</Dropdown.Item>
-                      </DropdownButton>
-                      <Form.Control aria-label="Text input with dropdown button" />
-                    </InputGroup>
-                  </Form.Group>
-                  {/* Recycling Facility */}
-                  <Form.Group id="typeOfPlastic" className="mb-4">
-                    <Form.Label>Type of Plastic Collected</Form.Label>
-                    <InputGroup>
-                      <DropdownButton
-                        variant="outline-secondary"
-                        title="Dropdown"
-                        id="input-group-dropdown-2"
-                        align="end"
-                      >
-                        <Dropdown.Item href="#">Facility 1</Dropdown.Item>
-                        <Dropdown.Item href="#">Facility 2</Dropdown.Item>
-                        <Dropdown.Item href="#">Facility 3</Dropdown.Item>
-                      </DropdownButton>
-                      <Form.Control aria-label="Text input with dropdown button" />
-                    </InputGroup>
-                  </Form.Group>
-                  {/* Images of waste collected */}
-                  <div>
-         
-                      <input
-                        type="file"
-                        id="weight-collector"
-                        name="weight-collector"
-                        accept="image/*"
-                        capture="environment"
-                      ></input>
-
-                     
-     
-
-         
-                      <input
-                        type="file"
-                        id="weight-collector"
-                        name="weight-collector"
-                        accept="image/*"
-                        capture="environment"
-                      ></input>
-
-               
-                      <input
-                        type="file"
-                        id="weight-collector"
-                        name="weight-collector"
-                        accept="image/*"
-                        capture="environment"
-                      ></input>
-
-   
-                  </div>
-                  {/* Vehicle No. */}
-                  <Form.Group id="vehivle" className="mb-4">
-                    <Form.Label>Vehicle no.</Form.Label>
-                    <InputGroup>
-                      <Form.Control
-                        autoFocus
-                        required
-                        type="weight"
-                        placeholder="KAXX 0001"
-                      />
-                    </InputGroup>
-                  </Form.Group>
-                  {/* Summary */}
-                  <Button variant="primary" type="submit" className="w-100">
-                    Summary
-                  </Button>
-                </Form>
-              </div>
-            </Col>
+            <Stack direction="horizontal" className="col-md-5 mx-auto">
+              <Container>
+                {" "}
+                <Typography variant="lead"> Today's</Typography>
+                <Typography variant="h6">Weight</Typography>
+              </Container>
+              <div className="vr" style={{ color: "white" }} />
+              <Container>
+                {" "}
+                <Typography variant="lead"> Date's</Typography>
+                <Typography variant="h6">15/07/14</Typography>
+              </Container>
+              <div className="vr" style={{ color: "white" }} />
+              <Container>
+                {" "}
+                <Typography variant="lead">Time</Typography>
+                <Typography variant="h6">10:22</Typography>
+              </Container>
+            </Stack>
           </Row>
         </Container>
-      </section>
-    </main>
+        <Container>
+          <Typography variant="h2"> Collector Input</Typography>
+          <Card>
+            {" "}
+            <Card.Header>
+              <Stack direction="horizontal" gap={3}>
+                {" "}
+                <Recycle size={24} />
+                <div>
+                  <Typography variant="paragraph">3775207r35</Typography>
+                </div>
+              </Stack>
+            </Card.Header>
+            <Card.Body>
+              <Form>
+                <Form.Group className="mb-3" controlId="weight-collected">
+                  <Form.Label>Weight of Collected Waste</Form.Label>
+                  <InputGroup className="mb-3">
+                    <InputGroup.Text id="basic-addon1">
+                      <Scales size={20} />
+                    </InputGroup.Text>
+                    <Form.Control
+                      placeholder="100"
+                      aria-label="Username"
+                      aria-describedby="basic-addon1"
+                    />
+                  </InputGroup>
+
+                  <Form.Text className="text-muted">
+                    Don't forget to Click a picture
+                  </Form.Text>
+                </Form.Group>
+                <Form.Group>
+                  <Form.Label>Upload Picture</Form.Label>
+                  <Stack direction="Vertical" gap={3}>
+                  <Button variant="outline-secondary">
+                    <label for="weight-collector">
+                      <Camera />
+                    </label>
+                  </Button>
+
+                  <input
+                    type="file"
+                    id="weight-collector"
+                    name="weight-collector"
+                    accept="image/*"
+                    capture="environment"
+                    style={{ display: "none" }}
+                  ></input>
+                  <img src="weight-collector"  />
+                  </Stack>
+                </Form.Group>
+
+                <Form.Group className="mb-3" controlId="formBasicPassword">
+                  <Form.Label>Password</Form.Label>
+                  <Form.Control type="password" placeholder="Password" />
+                </Form.Group>
+                <Form.Group className="mb-3" controlId="formBasicCheckbox">
+                  <Form.Check type="checkbox" label="Check me out" />
+                </Form.Group>
+                <Button variant="primary" type="submit">
+                  Submit
+                </Button>
+              </Form>
+            </Card.Body>
+          </Card>
+        </Container>
+      </Stack>
+    </>
   );
 };
