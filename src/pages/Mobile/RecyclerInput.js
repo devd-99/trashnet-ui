@@ -101,7 +101,7 @@ export default () => {
                   <img
                     src="https://picsum.photos/40/40"
                     width="50"
-                    height="50"
+                    height="40"
                     class="rounded-circle"
                   ></img>
                 </Button>
@@ -121,9 +121,7 @@ export default () => {
                     <Button variant="secondary" onClick={handleClose}>
                       Close
                     </Button>
-                    <Button variant="primary" onClick={handleClose}>
-                      Save Changes
-                    </Button>
+                   
                   </Modal.Footer>
                 </Modal>
 
