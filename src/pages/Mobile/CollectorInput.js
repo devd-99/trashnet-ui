@@ -21,7 +21,8 @@ import {
   List,
   Recycle,
   CarSimple,
-  House, User
+  House,
+  User,
 } from "phosphor-react";
 
 export default () => {
@@ -69,8 +70,7 @@ export default () => {
   const { result1, uploader1 } = useDisplayImage();
 
   return (
-   <>
-    
+    <>
       <Navbar variant="light">
         <Container>
           <Button variant="outline-*">
@@ -91,6 +91,8 @@ export default () => {
           </Button>
         </Container>
       </Navbar>
+      <Container>
+        <br/>
       <Stack gap={3}>
         <Container>
           <Row>
@@ -117,6 +119,7 @@ export default () => {
             </Stack>
           </Row>
         </Container>
+        <br/>
         <Container>
           <Typography variant="h2"> Collector Input</Typography>
           <Card>
@@ -211,7 +214,7 @@ export default () => {
                       capture="environment"
                       onChange={(e) => {
                         setImageUrl(e.target.files[0]);
-                        uploader();
+                        uploaderu();
                       }}
                       style={{ display: "none" }}
                     ></input>
@@ -236,35 +239,38 @@ export default () => {
                   </InputGroup>
                 </Form.Group>
                 <Form.Group className="mb-3" controlId="weight-collected">
-                <div className="d-grid gap-2">
-                  <Button variant="primary" type="submit">
-                    {" "}
-                    Submit
-                  </Button>
-                </div>
+                  <div className="d-grid gap-2">
+                    <Button variant="primary" type="submit">
+                      {" "}
+                      Submit
+                    </Button>
+                  </div>
                 </Form.Group>
                 <Container>
-                <div className="d-grid gap-2">
-                  <Button variant="primary" type="submit">
-                    {" "}
-                    Submit
-                  </Button>
-                 
-                </div>
+                  <div className="d-grid gap-2">
+                    <Button variant="primary" type="submit">
+                      {" "}
+                      Submit
+                    </Button>
+                  </div>
                 </Container>
               </Form>
             </Card.Body>
           </Card>
-
         </Container>
       </Stack>
+      </Container>
       <Navbar fixed="bottom" className="bg-light">
         <Container>
-          
-          <Button variant="outline-*"  size="sm"><List  size={32}/></Button>
-          <Button variant="outline-*" size="sm"><House size={32}/></Button>
-          <Button variant="outline-*" size="sm"><User size={32}/></Button>
-          
+          <Button variant="outline-*" size="sm">
+            <List size={32} />
+          </Button>
+          <Button variant="outline-*" size="sm">
+            <House size={32} />
+          </Button>
+          <Button variant="outline-*" size="sm">
+            <User size={32} />
+          </Button>
         </Container>
       </Navbar>
     </>

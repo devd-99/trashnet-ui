@@ -1,244 +1,416 @@
 import React, { useRef, useEffect, useState } from "react";
-
-import Webcam from "react-webcam";
-import { Link } from "react-router-dom";
-import Dropdown from "react-bootstrap/Dropdown";
-import DropdownButton from "react-bootstrap/DropdownButton";
-import Form from "react-bootstrap/Form";
-import InputGroup from "react-bootstrap/InputGroup";
-
 import {
-  faFacebookF,
-  faGithub,
-  faTwitter,
-} from "@fortawesome/free-brands-svg-icons";
-import {
-  Col,
-  Row,
-  Card,
-  Button,
-  FormCheck,
+  Navbar,
   Container,
+  Button,
+  Image,
+  Row,
+  Col,
+  Stack,
+  Figure,
+  Form,
+  Card,
+  InputGroup,
+  Table,
+  Dropdown,
+  Pagination,
+  Offcanvas,
+  CloseButton,
 } from "react-bootstrap";
-
 import { Routes } from "../../routes";
-import BgImage from "../../assets/img/illustrations/signin.svg";
-
 import {
-  faCameraRetro,
-  faWeightHanging,
-  faAngleLeft,
-  faEnvelope,
-  faUnlockAlt,
-} from "@fortawesome/free-solid-svg-icons";
+  CDBSidebar,
+  CDBSidebarContent,
+  CDBSidebarFooter,
+  CDBSidebarHeader,
+  CDBSidebarMenu,
+  CDBSidebarMenuItem,
+} from "cdbreact";
+import { Typography } from "@material-tailwind/react";
+import {
+  Scales,
+  CaretDown,
+  Camera,
+  List,
+  Recycle,
+  CarSimple,
+  House,
+  User,
+  ChartBar,
+  HouseLine,
+  ArrowFatLineRight,
+} from "phosphor-react";
+import { NavLink } from "react-router-dom";
 
 export default () => {
-  var fileInput = document.getElementById('weight-collector');
-  var fileDisplayArea = document.getElementById('fileDisplayArea');
-
-  window.onload = function() {
-    var fileInput = document.getElementById('weight-collector');
-    var fileDisplayArea = document.getElementById('fileDisplayArea');
-
-    fileInput.addEventListener('change', function(e) {
-      // Put the rest of the demo code here.
-      var file = fileInput.files[0];
-      var imagetype = /image.*/;
-      if (file.type.match(imagetype)) {
-        var reader = new FileReader();
-        reader.onload = function(e){
-          fileDisplayArea.innerHTML = "";
-          var img = new Image();
-          img.src = reader.result;
-          fileDisplayArea.appendChild(img);
-        }
-        reader.readAsDataURL(file);
-    }else{
-      fileDisplayArea.innerHTML = "File not supported!";
-    }
-    });
-}
-
-  
-
-
-   
 
 
   return (
-    <main>
-      <section className="d-flex align-items-center my-5 mt-lg-6 mb-lg-5">
-        <Container>
-          <p className="text-center">
-            <Card.Link
-              as={Link}
-              to={Routes.DashboardOverview.path}
-              className="text-gray-700"
-            >
-              Back to
-              homepage
-            </Card.Link>
-          </p>
-          <Row
-            className="justify-content-center form-bg-image"
-            style={{ backgroundImage: `url(${BgImage})` }}
-          >
-            <Col
-              xs={12}
-              className="d-flex align-items-center justify-content-center"
-            >
-              <div className="mb-4 mb-lg-0 bg-white shadow-soft border rounded border-light p-4 p-lg-5 w-100 fmxw-500">
-                <div className="text-center text-md-center mb-4 mt-md-0">
-                  {/* Header */}
-                  <h3 className="mb-0">GST</h3>
-                </div>
-                <Form className="mt-4">
-                  <div className="mt-3 mb-4 text-center"></div>
-                  <div className=" justify-content-center my-4">
-                    {/* Weight */}
-                    <Form.Group id="weight" className="mb-4">
-                      <Form.Label>Weight of Collected waste</Form.Label>
-                      <InputGroup>
-                        <InputGroup.Text>
-                         
-                        </InputGroup.Text>
+    <>
+      <Stack direction="horizontal">
+        <div
+          style={{
+            display: "flex",
+            height: "100vh",
+            overflow: "scroll initial",
+          }}
+        >
+          <CDBSidebar textColor="#fff" backgroundColor="#333">
+            <CDBSidebarHeader prefix={<i className="fa fa-bars fa-large"></i>}>
+              <a
+                href="/"
+                className="text-decoration-none"
+                style={{ color: "inherit" }}
+              >
+                Trashnet
+              </a>
+            </CDBSidebarHeader>
 
-                        <Form.Control
-                          autoFocus
-                          required
-                          type="weight"
-                          placeholder="100"
-                        />
-                      </InputGroup>
-                       {/* Camera */}
-                    </Form.Group>
-                    <Form.Group id="weight" className="mb-4">
-                      <Form.Label>Picture of Weight</Form.Label>
-                      <input
-                        type="file"
-                        id="weight-collector"
-                        name="weight-collector"
-                        accept="image/*"
-                        capture="environment"
-                      ></input>
-                       <div id="fileDisplayArea"></div> 
-              
+            <CDBSidebarContent className="sidebar-content">
+              <CDBSidebarMenu>
+                <NavLink to="/#" activeClassName="activeClicked">
+                  {" "}
+                  <CDBSidebarMenuItem icon="home">Home</CDBSidebarMenuItem>
+                </NavLink>
 
+                <CDBSidebarMenuItem icon="Chart">Stats</CDBSidebarMenuItem>
+                <CDBSidebarMenuItem icon="list">Ledger</CDBSidebarMenuItem>
+                <CDBSidebarMenuItem icon="help">Helpdesk</CDBSidebarMenuItem>
+                {/* // <NavLink exact to="" activeClassName="activeClicked">
+            //   <CDBSidebarMenuItem icon="">Dashboard</CDBSidebarMenuItem>
+            // </NavLink>
+            // <NavLink exact to="" activeClassName="activeClicked">
+            //   <CDBSidebarMenuItem icon="">Tables</CDBSidebarMenuItem>
+            // </NavLink>
+            // <NavLink exact to="" activeClassName="activeClicked">
+            //   <CDBSidebarMenuItem icon="">Profile page</CDBSidebarMenuItem>
+            // </NavLink>
+            // <NavLink exact to="" activeClassName="activeClicked">
+            //   <CDBSidebarMenuItem icon="">Analytics</CDBSidebarMenuItem>
+            // </NavLink>
 
-                     
-                    </Form.Group>
-                    {/* <div classname="camera">
-                     <video ref={videoref}></video>
-                    <Button
-                      variant="outline-light"
-                      className="btn-icon-only btn-pil text-dark"
-                    >
-                      SNAP!
-                    
-                    </Button>
-                    </div>
-                    <div classname={'result' + (hasPhoto ? 'hasPhoto' : '')}>
-                      <canvas ref={photoref}>
-                        <button>
-                          CLOSE!
-                        </button>
-                      </canvas>
-                    </div> */}
-                  </div>
+            // <NavLink exact to=""activeClassName="activeClicked">
+            //   <CDBSidebarMenuItem icon="">404 page</CDBSidebarMenuItem>
+            // </NavLink> */}
+              </CDBSidebarMenu>
+            </CDBSidebarContent>
 
-                  {/* Type of Plastic */}
-                  <Form.Group id="typeOfPlastic" className="mb-4">
-                    <Form.Label>Type of Plastic </Form.Label>
-                    <InputGroup>
-                      <DropdownButton
-                        variant="outline-secondary"
-                        title="Dropdown"
-                        id="input-group-dropdown-2"
-                        align="end"
-                      >
-                        <Dropdown.Item href="#">Pla-Plastic</Dropdown.Item>
-                        <Dropdown.Item href="#">Pla-Plastic</Dropdown.Item>
-                        <Dropdown.Item href="#">Pla-Plastic</Dropdown.Item>
-                      </DropdownButton>
-                      <Form.Control aria-label="Text input with dropdown button" />
-                    </InputGroup>
-                  </Form.Group>
-                  {/* Recycling Facility */}
-                  <Form.Group id="typeOfPlastic" className="mb-4">
-                    <Form.Label>Type of Plastic </Form.Label>
-                    <InputGroup>
-                      <DropdownButton
-                        variant="outline-secondary"
-                        title="Dropdown"
-                        id="input-group-dropdown-2"
-                        align="end"
-                      >
-                        <Dropdown.Item href="#">Facility 1</Dropdown.Item>
-                        <Dropdown.Item href="#">Facility 2</Dropdown.Item>
-                        <Dropdown.Item href="#">Facility 3</Dropdown.Item>
-                      </DropdownButton>
-                      <Form.Control aria-label="Text input with dropdown button" />
-                    </InputGroup>
-                  </Form.Group>
-                  {/* Images of waste collected */}
-                  <div class="ml-5">
-                    <Button class="mx-auto" s>
-                      <input
-                        type="file"
-                        id="weight-collector"
-                        name="weight-collector"
-                        accept="image/*"
-                        capture="environment"
-                      ></input>
-
-                  
-                    </Button>
-
-                    <Button>
-                      <input
-                        type="file"x
-                        id="weight-collector"
-                        name="weight-collector"
-                        accept="image/*"
-                        capture="environment"
-                      ></input>
-
-                     
-                    </Button>
-                    <Button>
-                      <input
-                        type="file"
-                        id="weight-collector"
-                        name="weight-collector"
-                        accept="image/*"
-                        capture="environment"
-                      ></input>
-
-                 
-                    </Button>
-                  </div>
-                  {/* Vehicle No. */}
-                  <Form.Group id="vehivle" className="mb-4">
-                    <Form.Label>Vehicle no.</Form.Label>
-                    <InputGroup>
-                      <Form.Control
-                        autoFocus
-                        required
-                        type="weight"
-                        placeholder="KAXX 0001"
-                      />
-                    </InputGroup>
-                  </Form.Group>
-                  {/* Summary */}
-                  <Button variant="primary" type="submit" className="w-100">
-                    Summary
-                  </Button>
-                </Form>
+            <CDBSidebarFooter style={{ textAlign: "center" }}>
+              <div
+                style={{
+                  padding: "20px 5px",
+                }}
+              >
+                Trashnet web-app
               </div>
-            </Col>
-          </Row>
+            </CDBSidebarFooter>
+          </CDBSidebar>
+        </div>
+        <div
+          style={{
+            display: "flex",
+            height: "100vh",
+            overflow: "scroll initial",
+          }}
+        >
+          <CDBSidebar textColor="#333" backgroundColor="#fff">
+            <CDBSidebarHeader prefix={<i className="fa fa-bars fa-large"></i>}>
+              <a
+                href="/"
+                className="text-decoration-none"
+                style={{ color: "inherit" }}
+              >
+                Statistics
+              </a>
+            </CDBSidebarHeader>
+            <br />
+            <br />
+
+            <CDBSidebarContent className="sidebar-content">
+              <Container>
+                <Typography variant="h6">
+                  {" "}
+                  Cycles Overview (07 Jul - 14 Jul)
+                </Typography>
+
+                <Card>
+                  <Card.Body>
+                    <Stack direction="horizontal" gap={3}>
+                      <h1> 02 </h1>
+                      <Stack direction="vertical">
+                        <Typography variant="h6"> In-Progress</Typography>
+                        <Typography variant="lead"> Under-review</Typography>
+                      </Stack>
+                      <Button variant="outline-primary" size="sm">
+                        <ArrowFatLineRight />
+                      </Button>
+                    </Stack>
+                  </Card.Body>
+                </Card>
+                <br />
+                <Card>
+                  <Card.Body>
+                    <Stack direction="horizontal" gap={3}>
+                      <h1> 02 </h1>
+                      <Stack direction="vertical">
+                        <Typography variant="h6"> In-Progress</Typography>
+                        <Typography variant="lead"> Under-review</Typography>
+                      </Stack>
+                      <Button variant="outline-primary" size="sm">
+                        <ArrowFatLineRight />
+                      </Button>
+                    </Stack>
+                  </Card.Body>
+                </Card>
+                <br />
+                <Card>
+                  <Card.Body>
+                    <Stack direction="horizontal" gap={3}>
+                      <h1> 02 </h1>
+                      <Stack direction="vertical">
+                        <Typography variant="h6"> In-Progress</Typography>
+                        <Typography variant="lead"> Under-review</Typography>
+                      </Stack>
+                      <Button variant="outline-primary" size="sm">
+                        <ArrowFatLineRight />
+                      </Button>
+                    </Stack>
+                  </Card.Body>
+                </Card>
+              </Container>
+              <br />
+              <Container>
+                <Typography variant="h5"> Payments</Typography>
+
+                <Card>
+                  <Card.Body>
+                    <Stack direction="horizontal" gap={3}>
+                      <Stack direction="vertical">
+                        <Typography variant="h6"> Received</Typography>
+                        <Typography variant="h4"> 10,000</Typography>
+                      </Stack>
+                      <Button variant="outline-primary" size="sm">
+                        <ArrowFatLineRight />
+                      </Button>
+                    </Stack>
+                  </Card.Body>
+                </Card>
+                <br />
+              </Container>
+
+              {/* <CDBSidebarMenuItem icon="Chart">Stats</CDBSidebarMenuItem>
+                <CDBSidebarMenuItem icon="list">Ledger</CDBSidebarMenuItem>
+                <CDBSidebarMenuItem icon="help">Helpdesk</CDBSidebarMenuItem> */}
+              {/* // <NavLink exact to="" activeClassName="activeClicked">
+            //   <CDBSidebarMenuItem icon="">Dashboard</CDBSidebarMenuItem>
+            // </NavLink>
+            // <NavLink exact to="" activeClassName="activeClicked">
+            //   <CDBSidebarMenuItem icon="">Tables</CDBSidebarMenuItem>
+            // </NavLink>
+            // <NavLink exact to="" activeClassName="activeClicked">
+            //   <CDBSidebarMenuItem icon="">Profile page</CDBSidebarMenuItem>
+            // </NavLink>
+            // <NavLink exact to="" activeClassName="activeClicked">
+            //   <CDBSidebarMenuItem icon="">Analytics</CDBSidebarMenuItem>
+            // </NavLink>
+
+            // <NavLink exact to=""activeClassName="activeClicked">
+            //   <CDBSidebarMenuItem icon="">404 page</CDBSidebarMenuItem>
+            // </NavLink> */}
+            </CDBSidebarContent>
+
+            <CDBSidebarFooter style={{ textAlign: "center" }}>
+              <div
+                style={{
+                  padding: "20px 5px",
+                }}
+              >
+                <Button>All Cycles</Button>
+              </div>
+             
+            </CDBSidebarFooter>
+          </CDBSidebar>
+        </div>
+        <Container>
+          <Stack direction="Vertical" gap={3}>
+            <Typography variant="h1"> Ledger</Typography>
+            <Typography variant="lead">
+              Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nunc
+              vulputate libero et velit interdum, ac aliquet odio mattis.
+            </Typography>
+            <Form.Control size="lg" type="text" placeholder="Large text" />
+            <Stack direction="horizontal" gap={3}>
+              <br />
+              <br />
+              {/* <div className="vr, me-auto"/> */}
+              <Dropdown>
+                <Dropdown.Toggle
+                  id="dropdown-button-dark-example1"
+                  variant="secondary"
+                >
+                  Dropdown Button
+                </Dropdown.Toggle>
+
+                <Dropdown.Menu>
+                  <Dropdown.Item href="#/action-1">Action</Dropdown.Item>
+                  <Dropdown.Item href="#/action-2">
+                    Another action
+                  </Dropdown.Item>
+                  <Dropdown.Item href="#/action-3">
+                    Something else
+                  </Dropdown.Item>
+                </Dropdown.Menu>
+              </Dropdown>
+              <Dropdown>
+                <Dropdown.Toggle
+                  id="dropdown-button-dark-example1"
+                  variant="secondary"
+                >
+                  {" "}
+                  Dropdown Button
+                </Dropdown.Toggle>
+
+                <Dropdown.Menu>
+                  <Dropdown.Item href="#/action-1">Action</Dropdown.Item>
+                  <Dropdown.Item href="#/action-2">
+                    Another action
+                  </Dropdown.Item>
+                  <Dropdown.Item href="#/action-3">
+                    Something else
+                  </Dropdown.Item>
+                </Dropdown.Menu>
+              </Dropdown>
+              <Dropdown>
+                <Dropdown.Toggle
+                  id="dropdown-button-dark-example1"
+                  variant="secondary"
+                >
+                  {" "}
+                  Dropdown Button
+                </Dropdown.Toggle>
+
+                <Dropdown.Menu>
+                  <Dropdown.Item href="#/action-1">Action</Dropdown.Item>
+                  <Dropdown.Item href="#/action-2">
+                    Another action
+                  </Dropdown.Item>
+                  <Dropdown.Item href="#/action-3">
+                    Something else
+                  </Dropdown.Item>
+                </Dropdown.Menu>
+              </Dropdown>
+              <Dropdown>
+                <Dropdown.Toggle
+                  id="dropdown-button-dark-example1"
+                  variant="secondary"
+                >
+                  {" "}
+                  Dropdown Button
+                </Dropdown.Toggle>
+
+                <Dropdown.Menu>
+                  <Dropdown.Item href="#/action-1">Action</Dropdown.Item>
+                  <Dropdown.Item href="#/action-2">
+                    Another action
+                  </Dropdown.Item>
+                  <Dropdown.Item href="#/action-3">
+                    Something else
+                  </Dropdown.Item>
+                </Dropdown.Menu>
+              </Dropdown>
+            </Stack>
+            <Table responsive>
+              <thead>
+                <tr>
+                  <th>#</th>
+                  {Array.from({ length: 7 }).map((_, index) => (
+                    <th key={index}>Table heading</th>
+                  ))}
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>1</td>
+                  {Array.from({ length: 7 }).map((_, index) => (
+                    <td key={index}>Table cell {index}</td>
+                  ))}
+                </tr>
+                <tr>
+                  <td>2</td>
+                  {Array.from({ length: 7 }).map((_, index) => (
+                    <td key={index}>Table cell {index}</td>
+                  ))}
+                </tr>
+                <tr>
+                  <td>3</td>
+                  {Array.from({ length: 7 }).map((_, index) => (
+                    <td key={index}>Table cell {index}</td>
+                  ))}
+                </tr>
+                <tr>
+                  <td>4</td>
+                  {Array.from({ length: 7 }).map((_, index) => (
+                    <td key={index}>Table cell {index}</td>
+                  ))}
+                </tr>{" "}
+                <tr>
+                  <td>5</td>
+                  {Array.from({ length: 7 }).map((_, index) => (
+                    <td key={index}>Table cell {index}</td>
+                  ))}
+                </tr>{" "}
+                <tr>
+                  <td>6</td>
+                  {Array.from({ length: 7 }).map((_, index) => (
+                    <td key={index}>Table cell {index}</td>
+                  ))}
+                </tr>{" "}
+                <tr>
+                  <td>7</td>
+                  {Array.from({ length: 7 }).map((_, index) => (
+                    <td key={index}>Table cell {index}</td>
+                  ))}
+                </tr>
+                <tr>
+                  <td>8</td>
+                  {Array.from({ length: 7 }).map((_, index) => (
+                    <td key={index}>Table cell {index}</td>
+                  ))}
+                </tr>
+                <tr>
+                  <td>9</td>
+                  {Array.from({ length: 7 }).map((_, index) => (
+                    <td key={index}>Table cell {index}</td>
+                  ))}
+                </tr>
+              </tbody>
+            </Table>
+            <Pagination>
+              <Pagination.First />
+              <Pagination.Prev />
+              <Pagination.Item>{1}</Pagination.Item>
+              <Pagination.Ellipsis />
+
+              <Pagination.Item>{10}</Pagination.Item>
+              <Pagination.Item>{11}</Pagination.Item>
+              <Pagination.Item active>{12}</Pagination.Item>
+              <Pagination.Item>{13}</Pagination.Item>
+              <Pagination.Item disabled>{14}</Pagination.Item>
+
+              <Pagination.Ellipsis />
+              <Pagination.Item>{20}</Pagination.Item>
+              <Pagination.Next />
+              <Pagination.Last />
+            </Pagination>
+      
+        
+
+  
+          </Stack>
         </Container>
-      </section>
-    </main>
+
+      </Stack>
+     
+    </>
   );
 };
