@@ -48,26 +48,26 @@ export default () => {
 
   const { result, uploader } = useDisplayImage();
 
-  const [imageUrl, setImageUrl] = React.useState("");
-  const imageUrlref = React.useRef(null);
+  // const [imageUrl, setImageUrl] = React.useState("");
+  // const imageUrlref = React.useRef(null);
 
-  function somethingimage() {
-    const [display, setdisplay] = React.useState("");
+  // function somethingimage() {
+  //   const [display, setdisplay] = React.useState("");
 
-    function uploaderu(e) {
-      const imageUrlfile = e.target.files[0];
+  //   function uploaderu(e) {
+  //     const imageUrlfile = e.target.files[0];
 
-      const reader = new FileReader();
-      reader.addEventListener("load", (e) => {
-        setdisplay(e.target.result);
-      });
-      reader.readAsDataURL(imageUrlfile);
-    }
-    return { display, uploaderu };
-  }
-  const { display, uploaderu } = somethingimage();
+  //     const reader = new FileReader();
+  //     reader.addEventListener("load", (e) => {
+  //       setdisplay(e.target.result);
+  //     });
+  //     reader.readAsDataURL(imageUrlfile);
+  //   }
+  //   return { display, uploaderu };
+  // }
+  // const { display1, uploaderu1 } = somethingimage();
 
-  const { result1, uploader1 } = useDisplayImage();
+  // const { result1, uploader1 } = useDisplayImage();
 
   return (
     <>
@@ -155,7 +155,7 @@ export default () => {
                 <Form.Group className="mb-3">
                   <Form.Label>Upload Picture</Form.Label>
                   <Stack direction="Vertical" gap={3}>
-                    <Button variant="outline-secondary">
+                    {/* <Button variant="outline-secondary">
                       <label for="weight-collector">
                         <Camera />
                       </label>
@@ -173,7 +173,7 @@ export default () => {
                       }}
                       style={{ display: "none" }}
                     ></input>
-                    {result && <img ref={imageRef} src={result} alt="" />}
+                    {result && <img ref={imageRef} src={result} alt="" />} */}
                   </Stack>
                   <Form.Text className="text-muted">
                     Picture of the React hate machine
@@ -200,6 +200,26 @@ export default () => {
                 <Form.Group className="mb-3">
                   <Form.Label>Upload Pictures of Collected Waste</Form.Label>
                   <Stack direction="Vertical" gap={3}>
+                    {/* <Button variant="outline-secondary">
+                      <label for="weight-collector1">
+                        <Camera />
+                      </label>
+                    </Button>
+
+                    <input
+                      type="file"
+                      id="weight-collector1"
+                      name="weight-collector1"
+                      accept="image/*"
+                      capture="environment"
+                      onChange={(e) => {
+                        setImageUrl(e.target.files[0]);
+                        uploaderu1();
+                      }}w
+                      style={{ display: "none" }}
+                    ></input>
+                    {display1 && <img ref={imageUrlref} src={display1} alt="" />} */}
+                    {/* {result && <img ref={imageRef} src={result} alt="" />} */}
                     <Button variant="outline-secondary">
                       <label for="weight-collector">
                         <Camera />
@@ -208,17 +228,17 @@ export default () => {
 
                     <input
                       type="file"
-                      id="weight-collector1"
+                      id="weight-collector"
                       name="weight-collector"
                       accept="image/*"
                       capture="environment"
                       onChange={(e) => {
-                        setImageUrl(e.target.files[0]);
-                        uploaderu();
+                        setImage(e.target.files[5]);
+                        uploader(e);
                       }}
                       style={{ display: "none" }}
                     ></input>
-                    {display && <img ref={imageUrlref} src={display} alt="" />}
+                    {result && <img ref={imageRef} src={result} alt="" />}
                   </Stack>
                   <Form.Text className="text-muted">
                     Picture of the React hate machine
