@@ -14,7 +14,7 @@ import {
   ListGroup,
   Modal,
 } from "react-bootstrap";
-import { Routes } from "../../routes";
+import { Routes } from "../../../routes";
 import { Typography, Color, CardBody } from "@material-tailwind/react";
 import {
   Scales,
@@ -29,7 +29,10 @@ import {
   MapPinLine,
   Clock,
 } from "phosphor-react";
-import { Link } from "react-floating-action-button";
+import { Link } from "react-router-dom";
+import Mobiletopnavbar from "../../datacomponents/navtop-mobile";
+import Mobilebottomnavbar from "../../datacomponents/navbar-bottom-mobile";
+import Greetings from "../../datacomponents/greeting-mobile";
 
 export default () => {
   const [show, setShow] = useState(false);
@@ -39,26 +42,8 @@ export default () => {
 
   return (
     <>
-      <Navbar variant="light">
-        <Container>
-          <Button variant="outline-*">
-            <List size={24} />
-          </Button>
-        </Container>
-        <Container>
-          <Button variant="info" size="sm">
-            Contact Us
-          </Button>
-          <Button variant="outline-*" size="sm">
-            <img
-              src="https://picsum.photos/40/40"
-              width="20"
-              height="20"
-              class="rounded-circle"
-            ></img>
-          </Button>
-        </Container>
-      </Navbar>
+      <Mobilebottomnavbar />
+      <Mobiletopnavbar />
       <Container className="mb-3">
         <Typography variant="h1" color="textPrimary">
           Profile
@@ -121,7 +106,6 @@ export default () => {
                     <Button variant="secondary" onClick={handleClose}>
                       Close
                     </Button>
-                   
                   </Modal.Footer>
                 </Modal>
 
@@ -192,20 +176,6 @@ export default () => {
           </Card>
         </Stack>
       </Container>
-
-      <Navbar fixed="bottom" className="bg-light">
-        <Container>
-          <Button variant="outline-*" size="sm">
-            <List size={32} />
-          </Button>
-          <Button variant="outline-*" size="sm">
-            <House size={32} />
-          </Button>
-          <Button variant="outline-*" size="sm">
-            <User size={32} />
-          </Button>
-        </Container>
-      </Navbar>
     </>
   );
 };
