@@ -174,10 +174,10 @@ export default () => {
                   <Button variant="outline-primary"> Update Status</Button>
                 </div>
               </Card.Body>
-            </Card>
-            <Card>
-              <Card.Body></Card.Body>
-            </Card>
+              </Card>
+            <br/>
+            <br/>
+            <br/>
           </Stack>
         </Container>
       </Stack>
