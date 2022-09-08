@@ -22,6 +22,7 @@ export const Routes = {
   mobileprofile: { path: "/mobile/dashboard/mobileprofile" },
   signinmobile: { path: "/mobile/dashboard/signinmobile" },
   // form
+  Firebasecry: {path: "/mobile/firebase/testbyfire"},
   CollectorInput: { path: "/mobile/Forms/Collectorinput" },
   RecyclerConfirmation: { path: "/mobile/Forms/recyclerconfirmation" },
   RecyclerInput: { path: "/mobile/dashboard/Forms/recyclerinput" },

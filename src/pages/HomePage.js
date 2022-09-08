@@ -53,6 +53,7 @@ import mobiledashboard from "./Mobile/dashboard/mobiledashboard";
 import mobileprofile from "./Mobile/dashboard/mobileprofile";
 import Formhotkey from "./Mobile/dashboard/formhotkeys";
 //forms
+import Firebasecry from "./Mobile/firebase/testbyfire"
 import CollectorInput from "./Mobile/Forms/CollectorInput";
 import RecyclerInput from "./Mobile/Forms/recyclerinput";
 import RecyclerConfirmation from "./Mobile/Forms/recyclerconfirmation";
@@ -135,6 +136,11 @@ export default () => (
     <RouteWithLoader exact path={Routes.Signup.path} component={Signup} />
 
     {/* {Mobile Pages} */}
+    <RouteWithLoader
+      exact
+      path={Routes.Firebasecry.path}
+      component={Firebasecry}
+    /> 
     <RouteWithLoader
       exact
       path={Routes.mobiledashboard.path}
