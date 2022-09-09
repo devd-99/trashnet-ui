@@ -8,7 +8,7 @@ import { Routes } from "../../routes";
 import BgImage from "../../assets/img/illustrations/signin.svg";
 
 //firebase
-import db from '../../firebase.config';
+import {db} from '../../firebase.config';
 import { doc, onSnapshot, collection, query, where,getDocs } from "firebase/firestore";
 import {useState,useEffect} from 'react';
 

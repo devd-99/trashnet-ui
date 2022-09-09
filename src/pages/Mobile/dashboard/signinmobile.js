@@ -15,7 +15,7 @@ import { EnvelopeOpen, Password } from "phosphor-react";
 import { Typography } from "@material-tailwind/react";
 
 //firebase
-import db from "../../../firebase.config";
+import { db } from "../../../firebase.config";
 import {
   doc,
   onSnapshot,
@@ -27,20 +27,20 @@ import {
 import { useState, useEffect } from "react";
 
 export default () => {
-  const q = query(collection(db, "users"));
+  // const q = query(collection(db, "users"));
 
-  const [users, setUsers] = useState([]);
-  useEffect(() => {
-    fetchUsers();
-  }, []);
-  const fetchUsers = async () => {
-    const querySnapshot = await getDocs(q);
-    console.log(querySnapshot);
-    querySnapshot.forEach((doc) => {
-      // doc.data() is never undefined for query doc snapshots
-      console.log(doc.id, " => ", doc.data());
-    });
-  };
+  // const [users, setUsers] = useState([]);
+  // useEffect(() => {
+  //   fetchUsers();
+  // }, []);
+  // const fetchUsers = async () => {
+  //   const querySnapshot = await getDocs(q);
+  //   console.log(querySnapshot);
+  //   querySnapshot.forEach((doc) => {
+  //     // doc.data() is never undefined for query doc snapshots
+  //     console.log(doc.id, " => ", doc.data());
+  //   });
+  // };
 
   return (
     <main>

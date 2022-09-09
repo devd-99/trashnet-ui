@@ -60,6 +60,7 @@ import RecyclerConfirmation from "./Mobile/Forms/recyclerconfirmation";
 import ManufacturerConfirmation from "./Mobile/Forms/mfconfirmation";
 import GstBill from "./Mobile/Forms/gstbill";
 import signinmobile from "./Mobile/dashboard/signinmobile";
+import ledger from "./Desktop/ledger";
 
 const RouteWithLoader = ({ component: Component, ...rest }) => {
   const [loaded, setLoaded] = useState(false);
@@ -134,7 +135,12 @@ export default () => (
     />
     <RouteWithLoader exact path={Routes.Signin.path} component={Signin} />
     <RouteWithLoader exact path={Routes.Signup.path} component={Signup} />
-
+    {/* Desktop pages */}
+     <RouteWithLoader
+     exact
+     path={Routes.ledger.path}
+     component={ledger}
+   /> 
     {/* {Mobile Pages} */}
     <RouteWithLoader
       exact

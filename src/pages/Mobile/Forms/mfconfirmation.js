@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState} from "react";
 
 import {
   Navbar,
@@ -32,8 +32,38 @@ import {
 import Mobiletopnavbar from "../../datacomponents/navtop-mobile";
 import Mobilebottomnavbar from "../../datacomponents/navbar-bottom-mobile";
 import Greetings from "../../datacomponents/greeting-mobile";
+import { db } from "../../../firebase.config";
+import { addDoc, collection } from "firebase/firestore";
 
 export default () => {
+  const [weightofrematerialcollec, SetWeightofrematerialcollec] = useState("");
+  const [mfrecyclingfacility, setMfrerecyclingfacility] = useState("");
+  // const [collecimage, setCollecimage] = useState("");
+  const [mfcollecvehicle, setMfcollecvehicle] = useState("");
+  var showdate = new Date();
+  var displaytodaydate = showdate.getDate() + '/' + showdate.getMonth() + '/' + showdate.getFullYear();
+  var displaytimenow = showdate.getHours() + ' : ' + showdate.getMinutes();
+
+  const manusubmit = async (e) => {
+    e.preventDefault();
+    if (weightofrematerialcollec === "") {
+      alert("Form not filled completely.")
+    } else {
+      console.log("working")
+      const mfsubmitRef = collection(db, 'Manuconfirm')
+      // const imageRef = ref(storage, `collector/${collecimage.name}`)
+      // await uploadBytes(imageRef, collecimage)
+      await addDoc(mfsubmitRef, { 
+        "1. Form": "Manufacturer Confirmation", 
+        "2. date": displaytodaydate, 
+        "3. time": displaytimenow, 
+        "4. weight of material received": weightofrematerialcollec + " kgs", 
+        "5. Recycler": mfrecyclingfacility, 
+        "6. Vehicle no.": mfcollecvehicle  
+      })
+
+    }
+  }
   return (
     <>
       {" "}
@@ -57,7 +87,7 @@ export default () => {
             </Card.Header>
             <Card.Body>
               <Form>
-                <Form.Group className="mb-3" controlId="rc-plastic-received">
+                <Form.Group className="mb-3" >
                   <Form.Label>Weight of Material Received</Form.Label>
                   <InputGroup className="mb-3">
                     <InputGroup.Text id="basic-addon1">
@@ -67,12 +97,14 @@ export default () => {
                       placeholder="100"
                       aria-label="Username"
                       aria-describedby="basic-addon1"
+                      onChange={e => SetWeightofrematerialcollec(e.target.value)}
                     />
                   </InputGroup>
                 </Form.Group>
                 <Form.Group className="mb-3">
                   <Form.Label>Recycling Facility</Form.Label>
-                  <Form.Select aria-label="Default select example">
+                  <Form.Select aria-label="Default select example"
+                  onChange={e => setMfrerecyclingfacility(e.target.value)}>
                     <option>Click to Select</option>
                     <option value="1">One</option>
                     <option value="2">Two</option>
@@ -110,6 +142,7 @@ export default () => {
                       placeholder="KAXX 00 XXXX"
                       aria-label="Username"
                       aria-describedby="basic-addon1"
+                      onChange={e => setMfcollecvehicle(e.target.value)}
                     />
                   </InputGroup>
                 </Form.Group>
@@ -118,8 +151,9 @@ export default () => {
                     <Button
                       variant="primary"
                       type="submit"
-                      as={Link}
-                      to={Routes.mobiledashboard.path}
+                      // as={Link}
+                      // to={Routes.mobiledashboard.path}
+                      onClick={manusubmit}
                     >
                       {" "}
                       Submit
