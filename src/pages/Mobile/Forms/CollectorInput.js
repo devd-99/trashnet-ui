@@ -34,7 +34,7 @@ import { connectStorageEmulator, ref, uploadBytes } from "firebase/storage"
 import Mobiletopnavbar from "../../datacomponents/navtop-mobile";
 import Mobilebottomnavbar from "../../datacomponents/navbar-bottom-mobile";
 import Greetings from "../../datacomponents/greeting-mobile";
-import db from "../../../firebase.config";
+import{ db }from "../../../firebase.config";
 import storage from "../../../firebase.config";
 import { getAuth, onAuthStateChanged } from "firebase/auth";
 import { useHistory } from 'react-router-dom';
@@ -44,8 +44,6 @@ import { useHistory } from 'react-router-dom';
 
 
 export default () => {
-  const [date, setDate] = useState("")
-  const [time, setTime] = useState("")
   const [weightofplacollec, setWeightofplacollec] = useState("");
   const [plastictype, setPlastictype] = useState("");
   const [recyclingfacility, setRecyclingfacility] = useState("");
@@ -58,14 +56,10 @@ export default () => {
 
   const collecsumbmit = async (e) => {
     e.preventDefault();
-
-
-    console.log(date)
     if (weightofplacollec === '' && collecimage == null) {
       alert("Form not filled completely.")
     } else {
-      console.log("working" + weightofplacollec)
-      console.log(plastictype)
+      console.log("working")
       const collecinputRef = collection(db, 'Colinput')
       // const imageRef = ref(storage, `collector/${collecimage.name}`)
       // await uploadBytes(imageRef, collecimage)
@@ -133,7 +127,7 @@ export default () => {
               // onChange={(event)=>{setCollecimage(event.target.files[0])}}
               /> */}
               <Form>
-                <Form.Group className="mb-3" controlId="weightofplacollec">
+                <Form.Group className="mb-3">
                   <Form.Label>Weight of Plastic Collected</Form.Label>
                   <InputGroup className="mb-3">
                     <InputGroup.Text id="basic-addon1">
@@ -183,7 +177,7 @@ export default () => {
                   </Form.Text>
                 </Form.Group>
 
-                <Form.Group className="mb-3" controlId="weight-collected">
+                <Form.Group className="mb-3">
                   <Form.Label>Vehicle No.</Form.Label>
                   <InputGroup className="mb-3">
                     <InputGroup.Text id="basic-addon1">
@@ -197,7 +191,7 @@ export default () => {
                     />
                   </InputGroup>
                 </Form.Group>
-                <Form.Group className="mb-3" controlId="weight-collected">
+                <Form.Group className="mb-3">
                   <div className="d-grid gap-2">
                     <Button
                       variant="primary"

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 
 import {
   Navbar,
@@ -32,8 +32,43 @@ import {
 import Mobiletopnavbar from "../../datacomponents/navtop-mobile";
 import Mobilebottomnavbar from "../../datacomponents/navbar-bottom-mobile";
 import Greetings from "../../datacomponents/greeting-mobile";
+import { db } from "../../../firebase.config";
+import { addDoc, collection } from "firebase/firestore";
+
+
 
 export default () => {
+  const [weightofplarecollec, setWeightofplarecollec] = useState("");
+  const [processingmethod, setProcessingmethod] = useState("");
+  const [rerecyclingfacility, setRerecyclingfacility] = useState("");
+  // const [collecimage, setCollecimage] = useState("");
+  const [recollecvehicle, setRecollecvehicle] = useState("");
+  var showdate = new Date();
+  var displaytodaydate = showdate.getDate() + '/' + showdate.getMonth() + '/' + showdate.getFullYear();
+  var displaytimenow = showdate.getHours() + ' : ' + showdate.getMinutes();
+
+  const recyconfsubmit = async (e) => {
+    e.preventDefault();
+    if (weightofplarecollec === "") {
+      alert("Form not filled completely.")
+    } else {
+      console.log("working")
+      const recyconfsubmitRef = collection(db, 'Recyconfirm')
+      // const imageRef = ref(storage, `collector/${collecimage.name}`)
+      // await uploadBytes(imageRef, collecimage)
+      await addDoc(recyconfsubmitRef, { 
+        "1. Form": "Recycler Confirmation", 
+        "2. date": displaytodaydate, 
+        "3. time": displaytimenow, 
+        "4. weight": weightofplarecollec + " kgs", 
+        "5. processing method": processingmethod, 
+        "6. Recycler": rerecyclingfacility, 
+        "7. Vehicle no.": recollecvehicle 
+      })
+
+    }
+  }
+
   return (
     <>
       {" "}
@@ -54,7 +89,7 @@ export default () => {
             </Card.Header>
             <Card.Body>
               <Form>
-                <Form.Group className="mb-3" controlId="rc-plastic-received">
+                <Form.Group className="mb-3" >
                   <Form.Label>Weight of Received Plastic </Form.Label>
                   <InputGroup className="mb-3">
                     <InputGroup.Text id="basic-addon1">
@@ -64,29 +99,35 @@ export default () => {
                       placeholder="100"
                       aria-label="Username"
                       aria-describedby="basic-addon1"
+                      onChange={e => setWeightofplarecollec(e.target.value)}
+    
                     />
                   </InputGroup>
                 </Form.Group>
                 <Form.Group className="mb-3">
                   <Form.Label>Recycling Facility</Form.Label>
-                  <Form.Select aria-label="Default select example">
-                    <option>Click to Select</option>
-                    <option value="1">One</option>
-                    <option value="2">Two</option>
-                    <option value="3">Three</option>
+                  <Form.Select  
+                    aria-label="Default select example"
+                    onChange={e => setRerecyclingfacility(e.target.value)}>
+                      <option>Click to Select</option>
+                      <option value="dfdsfsf">One</option>
+                      <option value="2">Two</option>
+                      <option value="3">Three</option>
                   </Form.Select>
                 </Form.Group>
                 <Form.Group className="mb-3">
                   <Form.Label>Processing Method</Form.Label>
-                  <Form.Select aria-label="Default select example">
-                    <option>Click to Select</option>
-                    <option value="1">One</option>
-                    <option value="2">Two</option>
-                    <option value="3">Three</option>
+                  <Form.Select 
+                    aria-label="Default select example"
+                    onChange={e => setProcessingmethod(e.target.value)}>
+                      <option>Click to Select</option>
+                      <option value="1">One</option>
+                      <option value="2">Two</option>
+                      <option value="3">Three</option>
                   </Form.Select>
                 </Form.Group>
                 <Form.Group className="mb-3">
-                  <Form.Label>Upload Pictures of Collected Waste</Form.Label>
+                  <Form.Label>Upload Pictures of Received Plastic</Form.Label>
                   <Stack direction="Vertical" gap={3}>
                     <Button variant="outline-secondary">
                       <label for="weight-collector">
@@ -106,7 +147,7 @@ export default () => {
                   </Form.Text>
                 </Form.Group>
 
-                <Form.Group className="mb-3" controlId="weight-collected">
+                <Form.Group className="mb-3" onChange={e => setRecollecvehicle(e.target.value)}>
                   <Form.Label>Vehicle No.</Form.Label>
                   <InputGroup className="mb-3">
                     <InputGroup.Text id="basic-addon1">
@@ -124,8 +165,9 @@ export default () => {
                     <Button
                       variant="primary"
                       type="submit"
-                      as={Link}
-                      to={Routes.mobiledashboard.path}
+                      // as={Link}
+                      // to={Routes.mobiledashboard.path}
+                      onClick={recyconfsubmit}
                     >
                       {" "}
                       Submit
