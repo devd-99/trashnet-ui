@@ -36,6 +36,8 @@ import Mobilebottomnavbar from "../../datacomponents/navbar-bottom-mobile";
 import Greetings from "../../datacomponents/greeting-mobile";
 import db from "../../../firebase.config";
 import storage from "../../../firebase.config";
+import { getAuth, onAuthStateChanged } from "firebase/auth";
+import { useHistory } from 'react-router-dom';
 
 
 
@@ -52,6 +54,7 @@ export default () => {
   var showdate = new Date();
   var displaytodaydate = showdate.getDate() + '/' + showdate.getMonth() + '/' + showdate.getFullYear();
   var displaytimenow = showdate.getHours() + ' : ' + showdate.getMinutes();
+  const history = useHistory();
 
   const collecsumbmit = async (e) => {
     e.preventDefault();
@@ -79,10 +82,28 @@ export default () => {
     }
   }
 
+  const auth = getAuth();
+  onAuthStateChanged(auth, (user) => {
+    if (user) {
+      // User is signed in, see docs for a list of available properties
+      // https://firebase.google.com/docs/reference/js/firebase.User
+      const uid = user.uid;
+      console.log(uid)
+      // ...
+    } else {
+      // User is signed out
+      // ...
+      console.log(auth)
+      console.log("you shouldn't be here")
+      history.push("/mobile/dashboard/mobiledashboard")
+    }
+  });
+
 
 
   return (
-    <>
+    
+      <>
       {" "}
       <Mobilebottomnavbar />
       <Mobiletopnavbar />
