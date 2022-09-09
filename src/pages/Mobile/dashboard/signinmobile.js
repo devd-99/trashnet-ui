@@ -92,27 +92,6 @@ export default () => {
   
  
 
-  const logInWithEmailAndPassword = async () => {
-    var res = null
-    console.log(formData)
-    try {
-      const email = String(formData.email)
-      const password = String(formData.password)
-      console.log(email, password)
-      res = await signInWithEmailAndPassword(auth, email, password);
-      console
-    } catch (err) {
-      console.error(err);
-      alert(err.message);
-    }
-    finally {
-      const user = res.user;
-      console.log(user)
-      history.push("/mobile/dashboard/mobiledashboard");
-      
-    }
-  };
-=======
   // const q = query(collection(db, "users"));
 
   // const [users, setUsers] = useState([]);
@@ -127,7 +106,6 @@ export default () => {
   //     console.log(doc.id, " => ", doc.data());
   //   });
   // };
->>>>>>> 5501700b6cc04b3c615905553c769aa144a347a2
 
   return (
     <main>
