@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   Navbar,
   Container,
@@ -28,7 +28,6 @@ import {
   MapPinLine,
   Clock,
 } from "phosphor-react";
-import { addDoc, collection } from "firebase/firestore";
 // import {storage}from "./../../../firebase"
 import { connectStorageEmulator, ref, uploadBytes } from "firebase/storage"
 import Mobiletopnavbar from "../../datacomponents/navtop-mobile";
@@ -37,52 +36,47 @@ import Greetings from "../../datacomponents/greeting-mobile";
 import{ db }from "../../../firebase.config";
 import storage from "../../../firebase.config";
 import { getAuth, onAuthStateChanged } from "firebase/auth";
+import { collection, addDoc, query, getDocs, where , doc, setDoc} from "firebase/firestore";
 import { useHistory } from 'react-router-dom';
 
 
+const initialFormData = Object.freeze({
+  weight: "",
+  typeOfPlastic: "",
+  vehicle_no: ""
+});
 
-
+// var list = []
+var PWP_List = [];
+var loc = null
 
 export default () => {
   const [weightofplacollec, setWeightofplacollec] = useState("");
   const [plastictype, setPlastictype] = useState("");
   const [recyclingfacility, setRecyclingfacility] = useState("");
+  const [formData, updateFormData] = useState(initialFormData);
   // const [collecimage, setCollecimage] = useState("");
+
+  const [list, setList] = useState([]);
+  const [user, setUser] = useState([]);
+
   const [collecvehicle, setCollecvehicle] = useState("");
   var showdate = new Date();
   var displaytodaydate = showdate.getDate() + '/' + showdate.getMonth() + '/' + showdate.getFullYear();
   var displaytimenow = showdate.getHours() + ' : ' + showdate.getMinutes();
+  
   const history = useHistory();
 
-  const collecsumbmit = async (e) => {
-    e.preventDefault();
-    if (weightofplacollec === '' && collecimage == null) {
-      alert("Form not filled completely.")
-    } else {
-      console.log("working")
-      const collecinputRef = collection(db, 'Colinput')
-      // const imageRef = ref(storage, `collector/${collecimage.name}`)
-      // await uploadBytes(imageRef, collecimage)
-      await addDoc(collecinputRef, { 
-        "1. Form": "Collector Input", 
-        "2. date": displaytodaydate, 
-        "3. time": displaytimenow, 
-        "4. weight": weightofplacollec + " kgs", 
-        "5. plastic-type": plastictype, 
-        "6. Recycler": recyclingfacility, 
-        "7. Vehicle no.": collecvehicle 
-      })
-
-    }
-  }
-
+  //auth and redirection
   const auth = getAuth();
   onAuthStateChanged(auth, (user) => {
     if (user) {
       // User is signed in, see docs for a list of available properties
       // https://firebase.google.com/docs/reference/js/firebase.User
       const uid = user.uid;
-      console.log(uid)
+      setUser(user)
+      // console.log(uid)
+      // document.getElementById('collector_id').value = uid;
       // ...
     } else {
       // User is signed out
@@ -93,6 +87,131 @@ export default () => {
     }
   });
 
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    const a = document.getElementById('recycler_name');
+    const t = {recycler: a.value}
+
+    if(formData.weight === 0 || formData.weight === null) {
+      alert("Form not correctly filled");
+      return
+    }
+
+    // console.log(t)
+    await addDoc(collection(db, "cycles"), t).then(async(tid) => {
+
+      
+      console.log(tid.id)
+      console.log("handlesubmit called")
+
+      const cycle_id = String(tid.id)
+      const weight = String(formData.weight)
+      const typeOfPlastic = String(formData.typeOfPlastic)
+      const recycler_id = String(a.value)
+      const vehicle_no = String(formData.vehicle_no)
+      const geolocationPosition = {
+        latitude: loc.coords.latitude,
+        longitude: loc.coords.longitude,
+        timestamp: loc.timestamp
+      }
+      console.log(geolocationPosition)
+
+      const payload = {
+
+        cycle_id: cycle_id,
+        //DO NOT modify creator role within the scope of this component
+        transaction_creator_role: "c",
+        collector_id: user.uid,
+        weight: weight,
+        typeOfPlastic: typeOfPlastic,
+        recycler_id: recycler_id,
+        vehicle_no: vehicle_no,
+        geolocationPosition: geolocationPosition
+      }
+
+      console.log(payload)
+
+      const docRef = await addDoc(collection(db, "transactions"), payload)
+
+      formData.weight = 0
+      document.getElementById("weight").value = 0;
+      history.push("/mobile/dashboard/mobiledashboard")
+
+    })
+
+    // if (weightofplacollec === '' && collecimage == null) {
+    //   alert("Form not filled completely.")
+    // } else {
+
+    //   const a = document.getElementById('recycler_name');
+    //   const t = {recycler: a.value}
+      
+    //   const collecinputRef = collection(db, 'Colinput')
+    //   // const imageRef = ref(storage, `collector/${collecimage.name}`)
+    //   // await uploadBytes(imageRef, collecimage)
+    //   await addDoc(collecinputRef, { 
+    //     "Form": "Collector Input", 
+    //     "Date": displaytodaydate, 
+    //     "3. time": displaytimenow, 
+    //     "4. weight": weightofplacollec + " kgs", 
+    //     "5. plastic-type": plastictype, 
+    //     "6. Recycler": recyclingfacility, 
+    //     "7. Vehicle no.": collecvehicle 
+    //   })
+
+    // }
+  }
+
+  
+
+  const position = () => {
+
+    navigator.geolocation.getCurrentPosition(
+      (position) => {loc = position; console.log(loc);},
+      err => console.log(err)
+    )
+    // console.log(loc)
+    // console.log(formData)
+    // console.log(list)
+  }
+
+  
+  const getPWPs = async() => {
+    const q = query(collection(db, "users"), where("role", "==", "r"));
+    // console.log(PWP_List)
+    const querySnapshot = await getDocs(q);
+    querySnapshot.forEach((doc) => {
+      // doc.data() is never undefined for query doc snapshots
+      // console.log(doc.id, " => ", doc.data());
+      PWP_List.push(doc.data())
+      
+      
+      console.log(PWP_List)
+      
+    });
+    setList(PWP_List.map(pwp => <option value={pwp.uid} key = {pwp.uid}>{pwp.username}</option>))
+    // console.log(list.length)
+    
+  }
+
+
+  const handleChange = (e) => {
+    console.log("handleChange called")
+    updateFormData({
+      ...formData,
+
+      // Trimming any whitespace
+      [e.target.name]: e.target.value.trim()
+    });
+
+  };
+
+  useEffect(() => {
+    PWP_List = [];
+    getPWPs();
+    position();
+  }, [] )
 
 
   return (
@@ -111,7 +230,7 @@ export default () => {
               <Stack gap={3} direction="horizontal">
                 <Recycle size={24} />
                 <div>
-                  <Typography variant="paragraph">3775207r35</Typography>
+                  <Typography variant="paragraph" id = "collector_id">{user.uid}</Typography>
                 </div>
               </Stack>
             </Card.Header>
@@ -135,7 +254,9 @@ export default () => {
                     </InputGroup.Text>
                     <Form.Control
                       type="number"
-                      onChange={e => setWeightofplacollec(e.target.value)}
+                      name="weight"
+                      id="weight"
+                      onChange={handleChange}
                       placeholder="100"
                       aria-label="Username"
                       aria-describedby="basic-addon1"
@@ -144,7 +265,29 @@ export default () => {
                   </InputGroup>
                 </Form.Group>
 
-                <Form.Group className="mb-3">
+
+
+                <Form.Group className="mb-4">
+                    <Form.Label>Recycler Name</Form.Label>
+                    <InputGroup>
+                      {/* <Form.Control
+                        autoFocus
+                        required
+                        type="weight"
+                        placeholder="Sample Recycler Name"
+                        id="recycler_name" name="recycler_name" onChange={handleChange}
+                      /> */}
+                      <Form.Select aria-label="Role Selection" name="role"  id="recycler_name" onChange={handleChange}>
+                        {/* <option>Open this select menu</option> */}
+
+                        {list}
+                        {/* {PWP_List.map(item => <option value={item.uid} key={item.uid}>{item.username} </option>)} */}
+                        {/* <option value = "1">2</option> */}
+                      </Form.Select>
+                    </InputGroup>
+                  </Form.Group>
+
+                {/* <Form.Group className="mb-3">
                   <Form.Label>Type of Plastic</Form.Label>
                   <Form.Select aria-label="Default select example" onChange={e => { setPlastictype(e.target.value) }}>
                     <option>Click to Select</option>
@@ -153,15 +296,23 @@ export default () => {
                     <option value="3">Three</option>
                   </Form.Select>
                 </Form.Group>
-                <Form.Group className="mb-3">
-                  <Form.Label>Recycling Facility</Form.Label>
-                  <Form.Select aria-label="Default select example" onChange={e => { setRecyclingfacility(e.target.value) }}>
-                    <option>Click to Select</option>
-                    <option value="react react react">One</option>
-                    <option value="2">Two</option>
-                    <option value="3">Three</option>
-                  </Form.Select>
-                </Form.Group>
+                 */}
+
+                 {/* Type of Plastic */}
+                 <Form.Group id="typeOfPlastic" className="mb-4">
+                    <Form.Label>Type of Plastic</Form.Label>
+                    <InputGroup>
+                  
+                      <Form.Select aria-label="Role Selection" name="typeOfPlastic" onChange={handleChange}>
+                          <option>Open this select menu</option>
+                          <option value="w1">Waste Type 1</option>
+                          <option value="w2">Waste Type 2</option>
+                          <option value="w3">Waste Type 3</option>
+                          <option value="w4">Waste Type 4</option>
+                      </Form.Select>
+                    </InputGroup>
+                  </Form.Group>
+
                 <Form.Group className="mb-3">
                   <Form.Label>Upload Pictures of Collected Plastic</Form.Label>
                   <Stack direction="Vertical" gap={3}>
@@ -186,8 +337,9 @@ export default () => {
                     <Form.Control
                       placeholder="KAXX 00 XXXX"
                       aria-label="Username"
+                      name="vehicle_no"
                       aria-describedby="basic-addon1"
-                      onChange={e => setCollecvehicle(e.target.value)}
+                      onChange={handleChange}
                     />
                   </InputGroup>
                 </Form.Group>
@@ -198,7 +350,7 @@ export default () => {
                       type="submit"
                       // as={Link}
                       // to={Routes.mobiledashboard.path}
-                      onClick={collecsumbmit}
+                      onClick={handleSubmit}
                     >
                       {" "}
                       Submit
