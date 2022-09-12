@@ -32,10 +32,13 @@ import {
 import Mobiletopnavbar from "../../datacomponents/navtop-mobile";
 import Mobilebottomnavbar from "../../datacomponents/navbar-bottom-mobile";
 import Greetings from "../../datacomponents/greeting-mobile";
-import { db } from "../../../firebase.config";
+import { db, storage } from "../../../firebase.config";
 import { getAuth, onAuthStateChanged } from "firebase/auth";
 import { collection, addDoc, query, getDocs, where , doc, setDoc} from "firebase/firestore";
 import { useHistory } from 'react-router-dom';
+import { v4 } from "uuid";
+import {ref, uploadBytes } from "firebase/storage"
+
 
  const initialFormData = Object.freeze({
   weight:"",
@@ -60,6 +63,8 @@ export default () => {
   const [formData, updateFormData] = useState(initialFormData);
   const [list, setList] = useState([]);
   const [user, setUser] = useState([]);
+  const [collecimage, setCollecimage] = useState(null);
+
 
    const history = useHistory();
 
@@ -95,6 +100,13 @@ export default () => {
       alert("Form not correctly filled");
       return
     }
+    if (collecimage == null ) return ;
+    var imgName = `${collecimage.name + " id: " + v4()}`
+    const imageRef = ref(storage, `images/recyclerinput/${imgName}`)
+    uploadBytes(imageRef, collecimage).then(() => {
+      console.log("image uploaded"  )
+      console.log(imgName )
+    })
 
     // console.log(t)
     await addDoc(collection(db, "cycles2"), t).then(async(tid) => {
@@ -304,18 +316,15 @@ export default () => {
                 <Form.Group className="mb-3">
                   <Form.Label>Upload Pictures of Processed Material</Form.Label>
                   <Stack direction="Vertical" gap={3}>
-                    <Button variant="outline-secondary">
-                      <label for="weight-collector">
-                        <Camera />
-                      </label>
-                    </Button>
-                    <input
-                      accept="image/*"
-                      id="weight-collector"
-                      name="weight-collector"
-                      capture="environment"
-                      style={{ display: "none" }}
-                    ></input>
+                  <Button> <label for="collec">
+                      <Camera /> </label> </Button>
+                   <input   
+                    id="collec"  
+                    type="file" 
+                    accept="image/*"        
+                    capture="environment"
+                    style={{ display: "none" }}
+                    onChange={(event) => {setCollecimage(event.target.files[0])}}/>
                   </Stack>
                   <Form.Text className="text-muted">
                     Pictures of Plastic Received

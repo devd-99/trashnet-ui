@@ -33,10 +33,12 @@ import {
 import Mobiletopnavbar from "../../datacomponents/navtop-mobile";
 import Mobilebottomnavbar from "../../datacomponents/navbar-bottom-mobile";
 import Greetings from "../../datacomponents/greeting-mobile";
-import { db } from "../../../firebase.config";
+import { db, storage } from "../../../firebase.config";
 import { getAuth, onAuthStateChanged } from "firebase/auth";
 import {collection, addDoc, query, getDocs, where , doc, setDoc} from "firebase/firestore";
 import { useHistory } from 'react-router-dom';
+import { ref, uploadBytes} from 'firebase/storage'
+import { v4 } from "uuid";
 
 
 const initialFormData = Object.freeze({
@@ -50,11 +52,11 @@ var PWP_List = [];
 var loc = null
 
 export default () => {
-  const [weightofplarecollec, setWeightofplarecollec] = useState("");
-  const [processingmethod, setProcessingmethod] = useState("");
-  const [rerecyclingfacility, setRerecyclingfacility] = useState("");
-  // const [collecimage, setCollecimage] = useState("");
-  const [recollecvehicle, setRecollecvehicle] = useState("");
+  // const [weightofplarecollec, setWeightofplarecollec] = useState("");
+  // const [processingmethod, setProcessingmethod] = useState("");
+  // const [rerecyclingfacility, setRerecyclingfacility] = useState("");
+  const [collecimage, setCollecimage] = useState(null);
+  // const [recollecvehicle, setRecollecvehicle] = useState("");
   const [list, setList] = useState([]);
   const [user, setUser] = useState([]);
   const [formData, updateFormData] = useState(initialFormData);
@@ -95,6 +97,14 @@ export default () => {
       alert("Form not correctly filled");
       return
     }
+    if (collecimage == null ) return ;
+    var imgName = `${collecimage.name + " id: " + v4()}`
+    const imageRef = ref(storage, `images/recyclerconf/${imgName}`)
+    uploadBytes(imageRef, collecimage).then(() => {
+      console.log("image uploaded"  )
+      console.log(imgName )
+    })
+
 
     // console.log(t)
     await addDoc(collection(db, "cycles2"), t).then(async(tid) => {
@@ -275,18 +285,15 @@ export default () => {
                 <Form.Group className="mb-3">
                   <Form.Label>Upload Pictures of Received Plastic</Form.Label>
                   <Stack direction="Vertical" gap={3}>
-                    <Button variant="outline-secondary">
-                      <label for="weight-collector">
-                        <Camera />
-                      </label>
-                    </Button>
-                    <input
-                      accept="image/*"
-                      id="weight-collector"
-                      name="weight-collector"
-                      capture="environment"
-                      style={{ display: "none" }}
-                    ></input>
+                  <Button> <label for="collec">
+                      <Camera /> </label> </Button>
+                   <input   
+                    id="collec"  
+                    type="file" 
+                    accept="image/*"        
+                    capture="environment"
+                    style={{ display: "none" }}
+                    onChange={(event) => {setCollecimage(event.target.files[0])}}/>
                   </Stack>
                   <Form.Text className="text-muted">
                     Pictures of Plastic Received
