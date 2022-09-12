@@ -28,16 +28,16 @@ const DashboardCard = (props) => {
                   <Typography variant="h5">
                     {" "}
                     Arriving at <MapPinLine />{" "}
-                    <Typography variant="h5"> Station</Typography>
+                    <div><Typography variant="h6"> Station</Typography></div>
                   </Typography>
                   <Typography variant="h5">
                     {" "}
                     Vehicle no. <CarSimple />{" "}
-                    <Typography variant="h5"> KA00 XX 0000</Typography>
+                    <div><Typography variant="h6"> KA00 XX 0000</Typography></div>
                   </Typography>
                   <Typography variant="h5">
                     {" "}
-                    at <Clock /> <Typography variant="h5"> 12:00</Typography>
+                    at <Clock /> <div><Typography variant="h6"> 12:00</Typography></div>
                   </Typography>
                   <Button
                     as={Link}

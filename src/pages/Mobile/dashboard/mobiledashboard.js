@@ -48,7 +48,7 @@ export default () => {
       // https://firebase.google.com/docs/reference/js/firebase.User
       const uid = user.uid;
       setUser(user)
-      console.log(user.uid)
+      // console.log(user.uid)
       // document.getElementById('collector_id').value = uid;
       // ...
     } else {
@@ -60,7 +60,7 @@ export default () => {
     }
   });
   
-  // const [list, setList] = useState([]);
+  const [list, setList] = useState([]);
   const [user, setUser] = useState([]);
   const [transactionCardList, setTransactionCardList] = useState([])
   //list of tuples, 1) id, 2) collector/recycler/manufacturer data
@@ -117,50 +117,57 @@ export default () => {
   const searchTransactions = async(cycle_id) => {
 
     
-    var transactionInfo = []
     const q = query(collection(db, "transactions"), where("cycle_id", "==", cycle_id));
     const querySnapshot = await getDocs(q);
     querySnapshot.forEach((doc) => {
       // store doc ids into array, then search for all records in transactions for each doc id.
-      console.log(doc.id, " => ", doc.data());
-      var singleTransactionData = [doc.id, doc.data()]
-      transactionInfo.push(singleTransactionData)
+      // console.log(doc.id, " => ", doc.data());
+      transactionList.push(doc.data())
     });
-    transactionList.push([cycle_id, transactionInfo])
 
-    console.log(transactionList)
   }
-  
+
+  const getRelevantTransactions = async() => {
+    if(user){
+      //get user data
+      //search transactions collection for collector_id
+      console.log("in get transactions")
+      const q = query(collection(db, "cycles"), where("collector", "==", user.uid));
+      const querySnapshot = await getDocs(q);
+      querySnapshot.forEach((doc) => {
+        // store doc ids into array, then search for all records in transactions for each doc id.
+        // console.log(doc.id, " => ", doc.data());
+
+        cycleList.push([doc.id, doc.data()])
+      });
+
+      // console.log("before")
+      for (const cycle of cycleList) {
+        // console.log(cycle[0])
+        await searchTransactions(cycle[0])
+      }
+      console.log(transactionList)
+
+      const listItems = transactionList.map((txn) =>
+        // <li>{txn}</li>
+        <DashboardCard key = {txn.uid} rem = {txn}></DashboardCard>
+      );
+      // setList(transactionList.map(pwp => <DashboardCard value={pwp[0]} key = {pwp[0]}>{pwp.username}</DashboardCard>))
+      // setTransactionCardList(transactionList.map(txn => {
+      //   <DashboardCard ></DashboardCard>
+      // }))
+
+      setTransactionCardList(listItems)
+      console.log(transactionCardList)
+      console.log(listItems)
+    }
+
+    
+  }
 
   useEffect(() => {
     
-    const getRelevantTransactions = async() => {
-      if(user){
-        //get user data
-        //search transactions collection for collector_id
-        const q = query(collection(db, "cycles"), where("collector", "==", user.uid));
-        const querySnapshot = await getDocs(q);
-        querySnapshot.forEach((doc) => {
-          // store doc ids into array, then search for all records in transactions for each doc id.
-          console.log(doc.id, " => ", doc.data());
-
-          cycleList.push([doc.id, doc.data()])
-        });
-
-        
-        for (const cycle of cycleList) {
-          console.log(cycle[0])
-          await searchTransactions(cycle[0])
-        }
-        setTransactionCardList(transactionList.map(txn => {
-          <DashboardCard cycle_id = {txn[0]}></DashboardCard>
-        }))
-        console.log(transactionList.length)
-
-      }
-
-      
-    }
+    
 
     getRelevantTransactions().catch(console.error);
     
@@ -189,86 +196,7 @@ export default () => {
           <Typography variant="h5"> Cycles in Progress</Typography>
           <Stack gap={3}>
             {transactionCardList}
-            <DashboardCard cycle_id = "12345"></DashboardCard>
-            <Card>
-              <Card.Body>
-                <div className="d-grid gap-2">
-                  <Recycle />
-                  <Typography> 472103847283</Typography>
-                  <Typography variant="h4"> Plastic Type</Typography>
-                  <Typography variant="h5">
-                    {" "}
-                    Arriving at <MapPinLine />{" "}
-                    <Typography variant="h5"> Station</Typography>
-                  </Typography>
-                  <Typography variant="h5">
-                    {" "}
-                    Vehicle no. <CarSimple />{" "}
-                    <Typography variant="h5"> KA00 XX 0000</Typography>
-                  </Typography>
-                  <Typography variant="h5">
-                    {" "}
-                    at <Clock /> <Typography variant="h5"> 12:00</Typography>
-                  </Typography>
-                  <Button
-                    as={Link}
-                    to={Routes.RecyclerConfirmation.path}
-                    variant="outline-primary"
-                  >
-                    {" "}
-                    Update Status
-                  </Button>
-                </div>
-              </Card.Body>
-            </Card>
-            <Card>
-              <Card.Body>
-                <div className="d-grid gap-2">
-                  <Recycle />
-                  <Typography> 472103847283</Typography>
-                  <Typography variant="h4"> Plastic Type</Typography>
-                  <Typography variant="h5">
-                    {" "}
-                    Arriving at <MapPinLine />{" "}
-                    <Typography variant="h5"> Station</Typography>
-                  </Typography>
-                  <Typography variant="h5">
-                    {" "}
-                    Vehicle no. <CarSimple />{" "}
-                    <Typography variant="h5"> KA00 XX 0000</Typography>
-                  </Typography>
-                  <Typography variant="h5">
-                    {" "}
-                    at <Clock /> <Typography variant="h5"> 12:00</Typography>
-                  </Typography>
-                  <Button variant="outline-primary"> Update Status</Button>
-                </div>
-              </Card.Body>
-            </Card>
-            <Card>
-              <Card.Body>
-                <div className="d-grid gap-2">
-                  <Recycle />
-                  <Typography> 472103847283</Typography>
-                  <Typography variant="h4"> Plastic Type</Typography>
-                  <Typography variant="h5">
-                    {" "}
-                    Arriving at <MapPinLine />{" "}
-                    <Typography variant="h5"> Station</Typography>
-                  </Typography>
-                  <Typography variant="h5">
-                    {" "}
-                    Vehicle no. <CarSimple />{" "}
-                    <Typography variant="h5"> KA00 XX 0000</Typography>
-                  </Typography>
-                  <Typography variant="h5">
-                    {" "}
-                    at <Clock /> <Typography variant="h5"> 12:00</Typography>
-                  </Typography>
-                  <Button variant="outline-primary"> Update Status</Button>
-                </div>
-              </Card.Body>
-              </Card>
+            
             <br/>
             <br/>
             <br/>
