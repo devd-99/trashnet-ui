@@ -33,10 +33,9 @@ import { connectStorageEmulator, ref, uploadBytes } from "firebase/storage"
 import Mobiletopnavbar from "../../datacomponents/navtop-mobile";
 import Mobilebottomnavbar from "../../datacomponents/navbar-bottom-mobile";
 import Greetings from "../../datacomponents/greeting-mobile";
-import{ db }from "../../../firebase.config";
-import storage from "../../../firebase.config";
+import{ db, storage }from "../../../firebase.config";
 import { getAuth, onAuthStateChanged } from "firebase/auth";
-import { collection, addDoc, query, getDocs, where , doc, setDoc} from "firebase/firestore";
+import {collection, addDoc, query, getDocs, where , doc, setDoc} from "firebase/firestore";
 import { useHistory } from 'react-router-dom';
 
 
@@ -55,7 +54,7 @@ export default () => {
   const [plastictype, setPlastictype] = useState("");
   const [recyclingfacility, setRecyclingfacility] = useState("");
   const [formData, updateFormData] = useState(initialFormData);
-  // const [collecimage, setCollecimage] = useState("");
+  const [recyinmage, setRecyinmage] = useState("");
 
   const [list, setList] = useState([]);
   const [user, setUser] = useState([]);
@@ -99,7 +98,7 @@ export default () => {
     }
 
     // console.log(t)
-    await addDoc(collection(db, "cycles"), t).then(async(tid) => {
+    await addDoc(collection(db, "cycles2"), t).then(async(tid) => {
 
       
       console.log(tid.id)
@@ -132,7 +131,7 @@ export default () => {
 
       console.log(payload)
 
-      const docRef = await addDoc(collection(db, "transactions"), payload)
+      const docRef = await addDoc(collection(db, "transactions2"), payload)
 
       formData.weight = 0
       document.getElementById("weight").value = 0;
@@ -313,15 +312,21 @@ export default () => {
                     </InputGroup>
                   </Form.Group>
 
-                <Form.Group className="mb-3">
-                  <Form.Label>Upload Pictures of Collected Plastic</Form.Label>
+                  <Form.Group className="mb-3">
+                  <Form.Label>Upload Pictures of Processed Material</Form.Label>
                   <Stack direction="Vertical" gap={3}>
-                    {/* <Button variant="outline-secondary">
+                    <Button variant="outline-secondary">
                       <label for="weight-collector">
                         <Camera />
                       </label>
-                    </Button> */}
-
+                    </Button>
+                    <input
+                      accept="image/*"
+                      id="weight-collector"
+                      name="weight-collector"
+                      capture="environment"
+                      style={{ display: "none" }}
+                    ></input>
                   </Stack>
                   <Form.Text className="text-muted">
                     Pictures of Plastic Received

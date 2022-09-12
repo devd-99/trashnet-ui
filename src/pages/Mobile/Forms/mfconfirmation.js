@@ -1,4 +1,4 @@
-import React, { useState} from "react";
+import React, { useState, useEffect } from "react";
 
 import {
   Navbar,
@@ -33,37 +33,178 @@ import Mobiletopnavbar from "../../datacomponents/navtop-mobile";
 import Mobilebottomnavbar from "../../datacomponents/navbar-bottom-mobile";
 import Greetings from "../../datacomponents/greeting-mobile";
 import { db } from "../../../firebase.config";
-import { addDoc, collection } from "firebase/firestore";
+import { getAuth, onAuthStateChanged } from "firebase/auth";
+import { collection, addDoc, query, getDocs, where, doc, setDoc } from "firebase/firestore";
+import { useHistory } from 'react-router-dom';
+const initialFormData = Object.freeze({
+  weight: "",
+  typeOfPlastic: "",
+  vehicle_no: ""
+});
+
+// var list = []
+var PWP_List = [];
+var loc = null
+
 
 export default () => {
   const [weightofrematerialcollec, SetWeightofrematerialcollec] = useState("");
   const [mfrecyclingfacility, setMfrerecyclingfacility] = useState("");
   // const [collecimage, setCollecimage] = useState("");
+  const [formData, updateFormData] = useState(initialFormData);
   const [mfcollecvehicle, setMfcollecvehicle] = useState("");
   var showdate = new Date();
   var displaytodaydate = showdate.getDate() + '/' + showdate.getMonth() + '/' + showdate.getFullYear();
   var displaytimenow = showdate.getHours() + ' : ' + showdate.getMinutes();
 
-  const manusubmit = async (e) => {
-    e.preventDefault();
-    if (weightofrematerialcollec === "") {
-      alert("Form not filled completely.")
-    } else {
-      console.log("working")
-      const mfsubmitRef = collection(db, 'Manuconfirm')
-      // const imageRef = ref(storage, `collector/${collecimage.name}`)
-      // await uploadBytes(imageRef, collecimage)
-      await addDoc(mfsubmitRef, { 
-        "1. Form": "Manufacturer Confirmation", 
-        "2. date": displaytodaydate, 
-        "3. time": displaytimenow, 
-        "4. weight of material received": weightofrematerialcollec + " kgs", 
-        "5. Recycler": mfrecyclingfacility, 
-        "6. Vehicle no.": mfcollecvehicle  
-      })
+  const history = useHistory();
 
+  const [list, setList] = useState([]);
+  const [user, setUser] = useState([]);
+
+
+  //auth and redirection
+  const auth = getAuth();
+  onAuthStateChanged(auth, (user) => {
+    if (user) {
+      // User is signed in, see docs for a list of available properties
+      // https://firebase.google.com/docs/reference/js/firebase.User
+      const uid = user.uid;
+      setUser(user)
+      // console.log(uid)
+      // document.getElementById('collector_id').value = uid;
+      // ...
+    } else {
+      // User is signed out
+      // ...
+      console.log(auth)
+      console.log("you shouldn't be here")
+      history.push("/mobile/dashboard/mobiledashboard")
     }
+  });
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    const a = document.getElementById('recycler_name');
+    const t = { recycler: a.value }
+
+    if (formData.weight === 0 || formData.weight === null) {
+      alert("Form not correctly filled");
+      return
+    }
+
+    // console.log(t)
+    await addDoc(collection(db, "cycles"), t).then(async (tid) => {
+
+
+      console.log(tid.id)
+      console.log("handlesubmit called")
+
+      const cycle_id = String(tid.id)
+      const weight = String(formData.weight)
+      const typeOfPlastic = String(formData.typeOfPlastic)
+      const recycler_id = String(a.value)
+      const vehicle_no = String(formData.vehicle_no)
+      const geolocationPosition = {
+        latitude: loc.coords.latitude,
+        longitude: loc.coords.longitude,
+        timestamp: loc.timestamp
+      }
+      console.log(geolocationPosition)
+
+      const payload = {
+
+        cycle_id: cycle_id,
+        //DO NOT modify creator role within the scope of this component
+        transaction_creator_role: "c",
+        collector_id: user.uid,
+        weight: weight,
+        typeOfPlastic: typeOfPlastic,
+        recycler_id: recycler_id,
+        vehicle_no: vehicle_no,
+        geolocationPosition: geolocationPosition
+      }
+
+      console.log(payload)
+
+      const docRef = await addDoc(collection(db, "transactions"), payload)
+
+      formData.weight = 0
+      document.getElementById("weight").value = 0;
+      history.push("/mobile/dashboard/mobiledashboard")
+
+    })
   }
+
+  const position = () => {
+
+    navigator.geolocation.getCurrentPosition(
+      (position) => { loc = position; console.log(loc); },
+      err => console.log(err)
+    )
+    // console.log(loc)
+    // console.log(formData)
+    // console.log(list)
+  }
+
+
+  const getPWPs = async () => {
+    const q = query(collection(db, "users"), where("role", "==", "r"));
+    // console.log(PWP_List)
+    const querySnapshot = await getDocs(q);
+    querySnapshot.forEach((doc) => {
+      // doc.data() is never undefined for query doc snapshots
+      // console.log(doc.id, " => ", doc.data());
+      PWP_List.push(doc.data())
+
+
+      console.log(PWP_List)
+
+    });
+    setList(PWP_List.map(pwp => <option value={pwp.uid} key={pwp.uid}>{pwp.username}</option>))
+    // console.log(list.length)
+
+  }
+
+
+  const handleChange = (e) => {
+    console.log("handleChange called")
+    updateFormData({
+      ...formData,
+
+      // Trimming any whitespace
+      [e.target.name]: e.target.value.trim()
+    });
+
+  };
+
+  useEffect(() => {
+    PWP_List = [];
+    getPWPs();
+    position();
+  }, [])
+
+  // const manusubmit = async (e) => {
+  //   e.preventDefault();
+  //   if (weightofrematerialcollec === "") {
+  //     alert("Form not filled completely.")
+  //   } else {
+  //     console.log("working")
+  //     const mfsubmitRef = collection(db, 'Manuconfirm')
+  //     // const imageRef = ref(storage, `collector/${collecimage.name}`)
+  //     // await uploadBytes(imageRef, collecimage)
+  //     await addDoc(mfsubmitRef, { 
+  //       "1. Form": "Manufacturer Confirmation", 
+  //       "2. date": displaytodaydate, 
+  //       "3. time": displaytimenow, 
+  //       "4. weight of material received": weightofrematerialcollec + " kgs", 
+  //       "5. Recycler": mfrecyclingfacility, 
+  //       "6. Vehicle no.": mfcollecvehicle  
+  //     })
+
+  //   }
+  // }
   return (
     <>
       {" "}
@@ -81,7 +222,7 @@ export default () => {
                   <Recycle size={24} />
                 </div>
                 <div>
-                  <Typography variant="paragraph">3775207r35</Typography>
+                  <Typography variant="paragraph" id=" Manufactuer-Input">{user.uid}</Typography>
                 </div>
               </Stack>
             </Card.Header>
@@ -94,21 +235,29 @@ export default () => {
                       <Scales size={20} />
                     </InputGroup.Text>
                     <Form.Control
+                      type="number"
+                      name="weight"
+                      id="weight"
+                      onChange={handleChange}
                       placeholder="100"
                       aria-label="Username"
                       aria-describedby="basic-addon1"
-                      onChange={e => SetWeightofrematerialcollec(e.target.value)}
                     />
                   </InputGroup>
                 </Form.Group>
                 <Form.Group className="mb-3">
                   <Form.Label>Recycling Facility</Form.Label>
-                  <Form.Select aria-label="Default select example"
-                  onChange={e => setMfrerecyclingfacility(e.target.value)}>
-                    <option>Click to Select</option>
+                  <Form.Select
+                    aria-label="Role Selection"
+                    name="role"
+                    id="recycler_name"
+                    onChange={handleChange}>
+
+                    {list}
+                    {/* <option>Click to Select</option>
                     <option value="1">One</option>
                     <option value="2">Two</option>
-                    <option value="3">Three</option>
+                    <option value="3">Three</option> */}
                   </Form.Select>
                 </Form.Group>
                 <Form.Group className="mb-3">
@@ -142,7 +291,7 @@ export default () => {
                       placeholder="KAXX 00 XXXX"
                       aria-label="Username"
                       aria-describedby="basic-addon1"
-                      onChange={e => setMfcollecvehicle(e.target.value)}
+                      onChange={handleChange}
                     />
                   </InputGroup>
                 </Form.Group>
@@ -153,7 +302,7 @@ export default () => {
                       type="submit"
                       // as={Link}
                       // to={Routes.mobiledashboard.path}
-                      onClick={manusubmit}
+                      onClick={handleSubmit}
                     >
                       {" "}
                       Submit

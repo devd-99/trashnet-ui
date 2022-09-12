@@ -42,53 +42,23 @@ export default () => {
     }
     const testRef = collection(db, 'test')
 
-// render data
-    // useEffect(() => {
-    //     const pleaseWork = async () => {
-    //         const querySnapshot = await getDocs(query(testRef));
-    //         setLists(querySnapshot.docs.map((doc) => [{...doc.data(), id: doc.id}]))
-    //     }
-    //     pleaseWork();
-
-    // })
-    // console.log("dogfish")
-
-    // console.log(testRef)
-    // useEffect(() => {
-    //     const getData = [];
-    //     const pleaseWork = db.collection("test").onSnapshot((querySnapshot) => {
-    //         querySnapshot.forEach((doc) => {
-    //             getData.push({
-    //                 ...doc.data(),
-    //                 key: doc.id,
-    //             });
-
-    //         });
-    //         setLists(getData);
-    //     });
-    //     return () => subscriber();
-    //     console.log(lists)
-
-
-
-    // }, [])
-
-    useEffect(()=>{ 
-        const pleaseWork = async() => {
+    useEffect(() => {
+        const pleaseWork = async () => {
             const data = await getDocs(testRef);
-            setLists(data.docs.map((doc) =>  ({...doc.data(), id: doc.id})))
-    }
-    pleaseWork();
-    
-})
+            setLists(data.docs.map((doc) => ({ ...doc.data(), id: doc.id })))
+        }
+        pleaseWork();
+        console.log(lists )
+
+    })    
 
     return (
         <div>
-           {lists.map((info)=> {
-            return <div> 
-                {lists.title}
-            </div>
-           })}
+            {lists.map((info) => {
+                return <div>
+                    {lists.title}
+                </div>
+            })}
 
         </div>
     )
