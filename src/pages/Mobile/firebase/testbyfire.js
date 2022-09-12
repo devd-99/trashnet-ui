@@ -43,15 +43,15 @@ export default () => {
     const testRef = collection(db, 'test')
 
 // render data
-    useEffect(() => {
-        const pleaseWork = async () => {
-            const querySnapshot = await getDocs(query(testRef));
-            setLists(querySnapshot.docs.map((doc) => [{...doc.data(), id: doc.id}]))
-        }
-        pleaseWork();
+    // useEffect(() => {
+    //     const pleaseWork = async () => {
+    //         const querySnapshot = await getDocs(query(testRef));
+    //         setLists(querySnapshot.docs.map((doc) => [{...doc.data(), id: doc.id}]))
+    //     }
+    //     pleaseWork();
 
-    })
-    console.log("dogfish")
+    // })
+    // console.log("dogfish")
 
     // console.log(testRef)
     // useEffect(() => {
@@ -73,10 +73,22 @@ export default () => {
 
     // }, [])
 
+    useEffect(()=>{ 
+        const pleaseWork = async() => {
+            const data = await getDocs(testRef);
+            setLists(data.docs.map((doc) =>  ({...doc.data(), id: doc.id})))
+    }
+    pleaseWork();
+    
+})
+
     return (
         <div>
-            <h1> something</h1>
-            {/* {lists.length > 0 ? ( lists.map ((list)=> <div key={lists.key}>{lists.title}</div>))  (<h1> ""</h1>)} */}
+           {lists.map((info)=> {
+            return <div> 
+                {lists.title}
+            </div>
+           })}
 
         </div>
     )
