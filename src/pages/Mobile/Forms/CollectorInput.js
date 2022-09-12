@@ -75,7 +75,7 @@ export default () => {
       // https://firebase.google.com/docs/reference/js/firebase.User
       const uid = user.uid;
       setUser(user)
-      // console.log(uid)
+      // console.log(user)
       // document.getElementById('collector_id').value = uid;
       // ...
     } else {
@@ -91,7 +91,7 @@ export default () => {
     e.preventDefault();
 
     const a = document.getElementById('recycler_name');
-    const t = {recycler: a.value}
+    const t = {collector: user.uid}
 
     if(formData.weight === 0 || formData.weight === null) {
       alert("Form not correctly filled");
