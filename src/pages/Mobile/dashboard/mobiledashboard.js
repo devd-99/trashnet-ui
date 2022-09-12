@@ -65,9 +65,9 @@ export default () => {
   const [transactionCardList, setTransactionCardList] = useState([])
   //list of tuples, 1) id, 2) collector/recycler/manufacturer data
   const cycleList = []
-
+  var transactionsPerCycle = []
   //list of tuples, 1) cycle id, 2) list of transaction objects (max len 4)
-  const transactionList = []
+
 
   const [image, setImage] = React.useState("");
   const imageRef = React.useRef(null);
@@ -119,11 +119,14 @@ export default () => {
     
     const q = query(collection(db, "transactions"), where("cycle_id", "==", cycle_id));
     const querySnapshot = await getDocs(q);
+    var transactionList = []
     querySnapshot.forEach((doc) => {
       // store doc ids into array, then search for all records in transactions for each doc id.
       // console.log(doc.id, " => ", doc.data());
       transactionList.push(doc.data())
     });
+    transactionsPerCycle.push([cycle_id, transactionList])
+
 
   }
 
@@ -146,11 +149,11 @@ export default () => {
         // console.log(cycle[0])
         await searchTransactions(cycle[0])
       }
-      console.log(transactionList)
+      // console.log(transactionList)
 
-      const listItems = transactionList.map((txn) =>
+      const listItems = transactionsPerCycle.map((txn) =>
         // <li>{txn}</li>
-        <DashboardCard key = {txn.uid} rem = {txn}></DashboardCard>
+        <DashboardCard key = {txn[0]} rem = {txn}></DashboardCard>
       );
       // setList(transactionList.map(pwp => <DashboardCard value={pwp[0]} key = {pwp[0]}>{pwp.username}</DashboardCard>))
       // setTransactionCardList(transactionList.map(txn => {
