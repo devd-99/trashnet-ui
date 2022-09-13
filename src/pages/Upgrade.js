@@ -10,7 +10,7 @@ export default () => {
             <Row className="mt-lg-5 mt-4 d-flex justify-content-center">
                 <Col xl={8}>
                     {/* <h1 className="text-center fw-bolder">Upgrade to Pro <FontAwesomeIcon icon={faRocket} className="ms-1" /></h1> */}
-                    <p className="text-center lead mb-lg-5 mb-4">Looking to take React development to the next level? Check out the premium version of Volt React Dashboard.</p>
+                    <p className="text-center lead mb-lg-5 mb-4">Looking to take React development to the next level? Check out the premium version of Trashnet Dashboard.</p>
                     <Table className="comparison-table table-striped">
                         <thead className="thead-light">
                             <tr>
@@ -71,7 +71,7 @@ export default () => {
                                     <Button href="https://themesberg.com/product/dashboard/volt-react" target="_blank" variant="primary" className="m-0 mt-3 mb-3"><FontAwesomeIcon icon={faDownload} className="me-1" /> Download</Button>
                                 </td>
                                 <td className="border-0">
-                                    <Button href="https://demo.themesberg.com/volt-pro-react/#/" target="_blank" variant="secondary" className="m-0 mt-3">Demo Volt React Pro <FontAwesomeIcon icon={faExternalLinkAlt} className="ms-1" /></Button>
+                                    <Button href="https://demo.themesberg.com/volt-pro-react/#/" target="_blank" variant="secondary" className="m-0 mt-3">Demo Trashnet Pro <FontAwesomeIcon icon={faExternalLinkAlt} className="ms-1" /></Button>
                                 </td>
                             </tr>
                         </tbody>

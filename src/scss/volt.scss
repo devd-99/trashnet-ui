@@ -1,5 +1,5 @@
 // =========================================================
-// * Volt React Dashboard
+// * Trashnet Dashboard
 // =========================================================
 
 // * Product Page: https://themesberg.com/product/dashboard/volt-react
