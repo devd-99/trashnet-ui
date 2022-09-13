@@ -69,48 +69,6 @@ export default () => {
   //list of tuples, 1) cycle id, 2) list of transaction objects (max len 4)
 
 
-  const [image, setImage] = React.useState("");
-  const imageRef = React.useRef(null);
-
-  function useDisplayImage() {
-    const [result, setResult] = React.useState("");
-
-    function uploader(e) {
-      const imageFile = e.target.files[0];
-
-      const reader = new FileReader();
-      reader.addEventListener("load", (e) => {
-        setResult(e.target.result);
-      });
-
-      reader.readAsDataURL(imageFile);
-    }
-
-    return { result, uploader };
-  }
-
-  const { result, uploader } = useDisplayImage();
-
-  const [imageUrl, setImageUrl] = React.useState("");
-  const imageUrlref = React.useRef(null);
-
-  function somethingimage() {
-    const [display, setdisplay] = React.useState("");
-
-    function uploaderu(e) {
-      const imageUrlfile = e.target.files[0];
-
-      const reader = new FileReader();
-      reader.addEventListener("load", (e) => {
-        setdisplay(e.target.result);
-      });
-      reader.readAsDataURL(imageUrlfile);
-    }
-    return { display, uploaderu };
-  }
-  const { display, uploaderu } = somethingimage();
-
-  const { result1, uploader1 } = useDisplayImage();
 
   const history = useHistory();
 

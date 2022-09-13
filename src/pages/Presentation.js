@@ -127,7 +127,7 @@ export default () => {
       <Container>
         <Row>
           <Col xs={12} className="text-center">
-            <Stack direction="horizontal">
+            <Stack direction="horizontal" gap={3}>
               <Button
                 variant="secondary"
                 as={Link}
@@ -138,6 +138,10 @@ export default () => {
               </Button>
               <Button as={Link} to={Routes.signinmobile.path}>
                 Mobile Experience
+              </Button>
+              <Button
+              as={Link} to={Routes.ledger.path}>
+                ledger
               </Button>
             </Stack>
 

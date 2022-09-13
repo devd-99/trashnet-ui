@@ -36,9 +36,90 @@ import {
   ChartBar,
   HouseLine,
 } from "phosphor-react";
-import { NavLink } from "react-router-dom";
+import{ db }from "../../firebase.config";
+import { useHistory } from "react-router-dom";
 
+import { getAuth, onAuthStateChanged } from "firebase/auth";
+import { collection, addDoc, query, getDocs, where , doc, setDoc} from "firebase/firestore";
+
+var list = [];
 export default () => {
+
+  const [list, setList] = useState([]);
+  const [user, setUser] = useState([]);
+  const [transactionCardList, setTransactionCardList] = useState([])
+  const cycleList = []
+  var transactionsPerCycle = []
+  //list of tuples, 1) cycle id, 2) list of transaction objects (max len 4)
+
+
+
+  const history = useHistory();
+
+  const searchTransactions = async(cycle_id) => {
+
+    
+    const q = query(collection(db, "transactions"), where("cycle_id", "==", cycle_id));
+    const querySnapshot = await getDocs(q);
+    var transactionList = []
+    querySnapshot.forEach((doc) => {
+      // store doc ids into array, then search for all records in transactions for each doc id.
+      // console.log(doc.id, " => ", doc.data());
+      transactionList.push(doc.data())
+    });
+    transactionsPerCycle.push([cycle_id, transactionList])
+
+
+  }
+
+  const getRelevantTransactions = async() => {
+    if(user){
+      //get user data
+      //search transactions collection for collector_id
+      console.log("in get transactions")
+      const q = query(collection(db, "cycles"), where("collector", "==", user.uid));
+      const querySnapshot = await getDocs(q);
+      querySnapshot.forEach((doc) => {
+        // store doc ids into array, then search for all records in transactions for each doc id.
+        // console.log(doc.id, " => ", doc.data());
+
+        cycleList.push([doc.id, doc.data()])
+      });
+
+      // console.log("before")
+      for (const cycle of cycleList) {
+        // console.log(cycle[0])
+        await searchTransactions(cycle[0])
+      }
+      // console.log(transactionList)
+
+      const listItems = transactionsPerCycle.map((txn) =>
+        // <li>{txn}</li>
+        <DashboardCard key = {txn[0]} rem = {txn}></DashboardCard>
+      );
+      // setList(transactionList.map(pwp => <DashboardCard value={pwp[0]} key = {pwp[0]}>{pwp.username}</DashboardCard>))
+      // setTransactionCardList(transactionList.map(txn => {
+      //   <DashboardCard ></DashboardCard>
+      // }))
+
+      setTransactionCardList(listItems)
+      console.log(transactionCardList)
+      console.log(listItems)
+    }
+
+    
+  }
+
+  useEffect(() => {
+    
+    
+
+    getRelevantTransactions().catch(console.error);
+    
+  }, [user] )
+
+  
+
   return (
     <>
       <Stack direction="horizontal">

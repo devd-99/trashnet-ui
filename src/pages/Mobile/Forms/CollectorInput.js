@@ -324,8 +324,8 @@ export default () => {
                   <Form.Group className="mb-3">
                   <Form.Label>Upload Pictures of Processed Material</Form.Label>
                   <Stack direction="Vertical" gap={3}>
-                  <Button> <label for="collec">
-                      <Camera /> </label> </Button>
+                  <label for="collec">
+                      <Camera /> </label>
                    <input   
                     id="collec"  
                     type="file" 
