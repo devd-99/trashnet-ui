@@ -63,14 +63,14 @@ export default () => {
             {" "}
             Gst Bill{" "}
           </Button>
-          <Button as={Link} to={Routes.NotFound.path}>
+          <Button as={Link} to={Routes.ledger.path}>
             {" "}
             View Input Cycle{" "}
           </Button>
-          <Button as={Link} to={Routes.Firebasecry.path}>
+          {/* <Button as={Link} to={Routes.Firebasecry.path}>
             {" "}
             Please work Firebase{" "}
-          </Button>
+          </Button> */}
         </Stack>
       </Container>
     </>
